@@ -1586,12 +1586,12 @@ async def on_ready():
             resolve_role_ids(guild)
         except Exception as e:
             print(f"Role resolve failed: {e}")
-        # Bubble-letter nickname (Unicode bold) — Discord can't color nicks; theme color is neon light blue in embeds
+        # Keep the bot's real username — Discord nicknames cannot have a real glow effect
         try:
-            if guild.me and guild.me.nick != "𝗧𝗶𝘁𝗮𝗻𝗶𝘂𝗺":
-                await guild.me.edit(nick="𝗧𝗶𝘁𝗮𝗻𝗶𝘂𝗺")
+            if guild.me and guild.me.nick is not None:
+                await guild.me.edit(nick=None)
         except Exception as e:
-            print(f"Nickname set failed in {guild.id}: {e}")
+            print(f"Nickname clear failed in {guild.id}: {e}")
     try:
         await restore_temproles()
     except Exception as e:

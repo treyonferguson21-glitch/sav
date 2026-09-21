@@ -105,6 +105,18 @@ REACTION_ROLES = [
         "emoji": "🧠",
         "gif": "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",  # brain / brainrot
     },
+    {
+        "id": 1551726575160922252,
+        "label": "Invite Reward Ping",
+        "emoji": "🎟️",
+        "gif": "https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif",  # reward / unlock
+    },
+    {
+        "id": 1551726682950344936,
+        "label": "Giveaway Ping",
+        "emoji": "🎉",
+        "gif": "https://media.giphy.com/media/26u4cqiYI30juCOGY/giphy.gif",  # party / giveaway
+    },
 ]
 REACTION_PANEL_GIF = "https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif"
 
@@ -1530,29 +1542,42 @@ async def post_panels():
     except Exception as e:
         print(f"Failed to post staff panel: {e}")
 
-    # Reaction roles
+    # Reaction roles — edit existing panel in place (or post if missing)
     try:
         ch = bot.get_channel(PANEL_CHANNEL_REACTION) or await bot.fetch_channel(PANEL_CHANNEL_REACTION)
-        if await _panel_already_exists(ch, "Reaction Roles"):
-            print(f"Reaction roles panel already present in {PANEL_CHANNEL_REACTION} — skip")
+        embed = discord.Embed(
+            title="❄ Reaction Roles",
+            description=(
+                "```\n"
+                "╔══════════════════════════════╗\n"
+                "║      TOGGLE YOUR PINGS       ║\n"
+                "╚══════════════════════════════╝\n"
+                "```\n"
+                "Click the buttons below to **toggle** notification roles.\n"
+                "Only get pinged for what you care about.\n\n"
+                "🚨 **Important**  ·  🛒 **Shop**  ·  📊 **Poll**  ·  📢 **Announcement**\n"
+                "💤 **Dead Chat**  ·  💱 **Trade**  ·  🔓 **Leaks**  ·  🧠 **SAB**\n"
+                "🎟️ **Invite Reward**  ·  🎉 **Giveaway**"
+            ),
+            color=THEME_COLOR
+        )
+        embed.set_footer(text=FOOTER_TEXT)
+        view = ReactionRoleView()
+        existing = None
+        async for msg in ch.history(limit=25):
+            if msg.author.id != bot.user.id:
+                continue
+            if msg.embeds and any(e.title and "Reaction Roles" in e.title for e in msg.embeds):
+                existing = msg
+                break
+            if msg.components:
+                existing = msg
+                break
+        if existing:
+            await existing.edit(embed=embed, view=view)
+            print(f"Reaction roles panel edited in {PANEL_CHANNEL_REACTION}")
         else:
-            embed = discord.Embed(
-                title="❄ Reaction Roles",
-                description=(
-                    "```\n"
-                    "╔══════════════════════════════╗\n"
-                    "║      TOGGLE YOUR PINGS       ║\n"
-                    "╚══════════════════════════════╝\n"
-                    "```\n"
-                    "Click the buttons below to **toggle** notification roles.\n"
-                    "Only get pinged for what you care about.\n\n"
-                    "🚨 **Important**  ·  🛒 **Shop**  ·  📊 **Poll**  ·  📢 **Announcement**\n"
-                    "💤 **Dead Chat**  ·  💱 **Trade**  ·  🔓 **Leaks**  ·  🧠 **SAB**"
-                ),
-                color=THEME_COLOR
-            )
-            embed.set_footer(text=FOOTER_TEXT)
-            await ch.send(embed=embed, view=ReactionRoleView())
+            await ch.send(embed=embed, view=view)
             print(f"Reaction roles panel posted in {PANEL_CHANNEL_REACTION}")
     except Exception as e:
         print(f"Failed to post reaction roles panel: {e}")

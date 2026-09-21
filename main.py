@@ -36,7 +36,7 @@ PANEL_CHANNEL_SUPPORT = 1550996022979858515   # support / scammer / reward / ads
 PANEL_CHANNEL_INDEX = 1550996020572323931     # index panel
 PANEL_CHANNEL_MM = 1550996014419288065        # middleman panel
 PANEL_CHANNEL_STAFF = 1550996017720074374     # staff applications panel
-PANEL_CHANNEL_REACTION = 1551270491665338399  # reaction roles panel
+PANEL_CHANNEL_REACTION = 1550995981582082220  # reaction roles panel
 
 # ==================== REACTION ROLES ====================
 REACTION_ROLES = [

@@ -151,12 +151,13 @@ ROLES = {
     4: {"slots": [
         {"ids": [1550995764635902032], "names": ["Admin", "Administrator"]},
         {"ids": [1550995740149555322], "names": ["Vice Manager"]},
-        {"ids": [1550995737398083645], "names": ["Server Manager"]},
+        {"ids": [1551702843868577792], "names": ["Head Administrator"]},
     ]},
     5: {"slots": [
         {"ids": [1550995734281588776], "names": ["Supervisor"]},
         {"ids": [1550995730053996718], "names": ["Co Owner", "Co-Owner"]},
         {"ids": [1550995725746438254], "names": ["Owners", "Owner"]},
+        {"ids": [1550995737398083645], "names": ["Server Manager"]},
     ]},
     6: {"slots": [
         {"ids": [1550995714828406824], "names": ["Guardian"]},
@@ -238,6 +239,7 @@ HIGH_STAFF_ROLES = [
     "1550995708793065563", "1550995712496631818", "1550995714828406824",
     "1550995725746438254", "1550995730053996718", "1550995734281588776",
     "1550995737398083645", "1550995740149555322", "1550995764635902032",
+    "1551702843868577792",  # Head Administrator
 ]
 ADMIN_AND_ABOVE_ROLES = HIGH_STAFF_ROLES[:]
 REWARD_STAFF_ROLES = HIGH_STAFF_ROLES[:]
@@ -250,6 +252,7 @@ ALL_STAFF_ROLES = [
     "1550995708793065563", "1550995712496631818", "1550995714828406824",
     "1550995725746438254", "1550995730053996718", "1550995734281588776",
     "1550995737398083645", "1550995740149555322", "1550995764635902032",
+    "1551702843868577792",  # Head Administrator
     "1550995767525769296", "1550995770931675376", "1550995773481554000",
     "1550995776199589910", "1550995784483479606",
     TICKET_TEAM, TICKET_TEAM_T1,
@@ -1344,12 +1347,13 @@ async def filter_bad_content(message):
         return False
     content_lower = content.lower()
     member = message.guild.get_member(message.author.id)
+    # Immune: Perm 5, Perm 6, and Special Users (level 99)
     if member and has_perm(member, 5):
         return False
     async def _warn(text):
         try:
             m = await message.channel.send(text)
-            await m.delete(delay=3)
+            await m.delete(delay=2)
         except Exception:
             pass
     for word in SCAM_WORDS:
@@ -1368,7 +1372,7 @@ async def filter_bad_content(message):
         except Exception:
             pass
         add_sanction(message.author.id, "bad word", bot.user.id if bot.user else 0)
-        await _warn(f"{message.author.mention} you said a blacklisted word")
+        await _warn(f"{message.author.mention} you cant say this word its blacklisted")
         return True
     return False
 

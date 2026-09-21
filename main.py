@@ -37,6 +37,7 @@ PANEL_CHANNEL_INDEX = 1550996020572323931     # index panel
 PANEL_CHANNEL_MM = 1550996014419288065        # middleman panel
 PANEL_CHANNEL_STAFF = 1550996017720074374     # staff applications panel
 PANEL_CHANNEL_REACTION = 1550995981582082220  # reaction roles panel
+PANEL_CHANNEL_RULES = 1550999253667815557     # server rules panel
 
 # ==================== REACTION ROLES ====================
 REACTION_ROLES = [
@@ -1398,6 +1399,40 @@ async def post_panels():
     except Exception as e:
         print(f"Failed to post reaction roles panel: {e}")
 
+    # Server rules
+    try:
+        ch = bot.get_channel(PANEL_CHANNEL_RULES) or await bot.fetch_channel(PANEL_CHANNEL_RULES)
+        await _clear_bot_messages(ch)
+        embed = discord.Embed(
+            title="❄ Server Rules — STEAL A BRAINROT",
+            description=(
+                "```\n"
+                "╔══════════════════════════════╗\n"
+                "║      READ & FOLLOW RULES     ║\n"
+                "╚══════════════════════════════╝\n"
+                "```\n"
+                "Failure to comply with our server rules and Discord TOS will result in moderation.\n\n"
+                "🤝 **1. Respect** — Treat everyone with kindness and respect.\n\n"
+                "🚫 **2. No Spam** — No spam, wall text, excessive caps, or mass pings.\n\n"
+                "🔒 **3. Protect Information** — Do not share personal info (names, emails, passwords, IPs, face, addresses, etc.).\n\n"
+                "📢 **4. No Advertising** — DM advertising and server advertising are strictly against the rules.\n\n"
+                "🔞 **5. No NSFW** — No NSFW content, links, videos, websites, or 18+ servers.\n\n"
+                "❗ **6. 13+ Only** — You must be 13+ (Discord TOS).\n\n"
+                "❌ **7. No Racism** — Racism is not tolerated.\n\n"
+                "❌ **8. No Homophobia** — Do not be homophobic toward others.\n\n"
+                "🤬 **9. No Swearing** — Cussing is prohibited (including VC). *Damn* and *Hell* are the only accepted exceptions.\n\n"
+                "🏛️ **10. No Politics** — Avoid politics and similar topics.\n\n"
+                "🚨 **11. No Scamming** — Do not scam.\n\n"
+                "⚠️ **12. No Links** — Links are auto-deleted and will result in a warn.\n\n"
+                "*Use common sense. Breaking rules may result in moderator action.*"
+            ),
+            color=THEME_COLOR
+        )
+        embed.set_footer(text=FOOTER_TEXT)
+        await ch.send(embed=embed)
+        print(f"Rules panel posted in {PANEL_CHANNEL_RULES}")
+    except Exception as e:
+        print(f"Failed to post rules panel: {e}")
 
 
 # ==================== ANTI-NUKE HELPERS ====================

@@ -27,7 +27,7 @@ BRAND_NAME = "STEAL A BRAINROT"
 # ==================== CHANNELS ====================
 LOG_CHANNEL_ID = 1550996038159179898
 WELCOME_CHANNEL_ID = 1551280369771225101
-INVITE_TRACKER_ID = 1550995989714698451
+INVITE_TRACKER_ID = 1551720482401689702
 BOOST_CHANNEL_ID = 1551280619240034314
 LEAVES_CHANNEL_ID = 1551280673619443754
 
@@ -1386,219 +1386,255 @@ async def _clear_bot_messages(channel, limit=15):
     except Exception as e:
         print(f"Could not clear old panels in {getattr(channel, 'id', '?')}: {e}")
 
+
+async def _panel_already_exists(channel, title_contains: str = None) -> bool:
+    """Return True if this bot already has a panel message in the channel (avoids repost on reload)."""
+    try:
+        async for msg in channel.history(limit=25):
+            if msg.author.id != bot.user.id:
+                continue
+            if msg.components:
+                return True
+            if title_contains and msg.embeds:
+                for emb in msg.embeds:
+                    if emb.title and title_contains.lower() in emb.title.lower():
+                        return True
+            elif msg.embeds:
+                return True
+        return False
+    except Exception as e:
+        print(f"panel exists check failed in {getattr(channel, 'id', '?')}: {e}")
+        return False
+
+
 async def post_panels():
-    """Post / refresh all service panels on startup (clears old ones first). No banner images."""
+    """Post service panels on startup only if they are missing (does not resend on every reload)."""
     # Support
     try:
         ch = bot.get_channel(PANEL_CHANNEL_SUPPORT) or await bot.fetch_channel(PANEL_CHANNEL_SUPPORT)
-        await _clear_bot_messages(ch)
-        embed = discord.Embed(
-            title="❄ Server Services",
-            description=(
-                "```\n"
-                "╔══════════════════════════════╗\n"
-                "║   STEAL A BRAINROT SERVICES  ║\n"
-                "╚══════════════════════════════╝\n"
-                "```\n"
-                "Open a private ticket with the menu below.\n\n"
-                "🛡️ **Contact Staff** — general support\n"
-                "🚨 **Scammer Report** — report with evidence\n"
-                "🎁 **Claim Reward** — claim giveaway prizes\n"
-                "📢 **Promote / Ads** — paid promotions\n"
-                "💰 **Pay for Rolls** — purchase secure rolls\n\n"
-                "*Stay icy. Stay safe.*"
-            ),
-            color=THEME_COLOR
-        )
-        embed.set_footer(text=FOOTER_TEXT)
-        await ch.send(embed=embed, view=TicketView())
-        print(f"Support panel posted in {PANEL_CHANNEL_SUPPORT}")
+        if await _panel_already_exists(ch, "Server Services"):
+            print(f"Support panel already present in {PANEL_CHANNEL_SUPPORT} — skip")
+        else:
+            embed = discord.Embed(
+                title="❄ Server Services",
+                description=(
+                    "```\n"
+                    "╔══════════════════════════════╗\n"
+                    "║   STEAL A BRAINROT SERVICES  ║\n"
+                    "╚══════════════════════════════╝\n"
+                    "```\n"
+                    "Open a private ticket with the menu below.\n\n"
+                    "🛡️ **Contact Staff** — general support\n"
+                    "🚨 **Scammer Report** — report with evidence\n"
+                    "🎁 **Claim Reward** — claim giveaway prizes\n"
+                    "📢 **Promote / Ads** — paid promotions\n"
+                    "💰 **Pay for Rolls** — purchase secure rolls\n\n"
+                    "*Stay icy. Stay safe.*"
+                ),
+                color=THEME_COLOR
+            )
+            embed.set_footer(text=FOOTER_TEXT)
+            await ch.send(embed=embed, view=TicketView())
+            print(f"Support panel posted in {PANEL_CHANNEL_SUPPORT}")
     except Exception as e:
         print(f"Failed to post support panel: {e}")
 
     # Index
     try:
         ch = bot.get_channel(PANEL_CHANNEL_INDEX) or await bot.fetch_channel(PANEL_CHANNEL_INDEX)
-        await _clear_bot_messages(ch)
-        embed = discord.Embed(
-            title="❄ Index Department",
-            description=(
-                "```\n"
-                "╔══════════════════════════════╗\n"
-                "║     INDEX YOUR BASE HERE     ║\n"
-                "╚══════════════════════════════╝\n"
-                "```\n"
-                "Select a base below to open an index ticket.\n\n"
-                "🟡 Gold  💠 Diamond  🌈 Rainbow  🌌 Galaxy\n"
-                "🍬 Candy  🌋 Lava  ☢️ Radioactive  ☯️ Yin Yang\n"
-                "☠️ Cursed  ✨ Divine  🤖 Cyber  👻 Phantom  💎 Crystal\n\n"
-                "**Rules**\n"
-                "1️⃣ Empty base required\n"
-                "2️⃣ Fail to return a brainrot → index canceled\n"
-                "3️⃣ High-value items one at a time\n\n"
-                "*We only take Garam's+ — no lowballs.*"
-            ),
-            color=THEME_COLOR
-        )
-        embed.set_footer(text=FOOTER_TEXT)
-        await ch.send(embed=embed, view=IndexView())
-        print(f"Index panel posted in {PANEL_CHANNEL_INDEX}")
+        if await _panel_already_exists(ch, "Index Department"):
+            print(f"Index panel already present in {PANEL_CHANNEL_INDEX} — skip")
+        else:
+            embed = discord.Embed(
+                title="❄ Index Department",
+                description=(
+                    "```\n"
+                    "╔══════════════════════════════╗\n"
+                    "║     INDEX YOUR BASE HERE     ║\n"
+                    "╚══════════════════════════════╝\n"
+                    "```\n"
+                    "Select a base below to open an index ticket.\n\n"
+                    "🟡 Gold  💠 Diamond  🌈 Rainbow  🌌 Galaxy\n"
+                    "🍬 Candy  🌋 Lava  ☢️ Radioactive  ☯️ Yin Yang\n"
+                    "☠️ Cursed  ✨ Divine  🤖 Cyber  👻 Phantom  💎 Crystal\n\n"
+                    "**Rules**\n"
+                    "1️⃣ Empty base required\n"
+                    "2️⃣ Fail to return a brainrot → index canceled\n"
+                    "3️⃣ High-value items one at a time\n\n"
+                    "*We only take Garam's+ — no lowballs.*"
+                ),
+                color=THEME_COLOR
+            )
+            embed.set_footer(text=FOOTER_TEXT)
+            await ch.send(embed=embed, view=IndexView())
+            print(f"Index panel posted in {PANEL_CHANNEL_INDEX}")
     except Exception as e:
         print(f"Failed to post index panel: {e}")
 
     # Middleman
     try:
         ch = bot.get_channel(PANEL_CHANNEL_MM) or await bot.fetch_channel(PANEL_CHANNEL_MM)
-        await _clear_bot_messages(ch)
-        embed = discord.Embed(
-            title="❄ Middleman (MM)",
-            description=(
-                "```\n"
-                "╔══════════════════════════════╗\n"
-                "║    SECURE TRADE MIDDLEMAN    ║\n"
-                "╚══════════════════════════════╝\n"
-                "```\n"
-                "Safe trades only — pick your service below.\n\n"
-                "🟡 **Cross Trades**\n"
-                "🥇 **OG Trades**\n"
-                "🥈 **1B+ Trades**\n"
-                "🥉 **500M Trades**\n"
-                "✅ **0–250M Trades**\n\n"
-                "*Tip your MM. Stay secure.*"
-            ),
-            color=THEME_COLOR
-        )
-        embed.set_footer(text=FOOTER_TEXT)
-        await ch.send(embed=embed, view=MiddlemanView())
-        print(f"Middleman panel posted in {PANEL_CHANNEL_MM}")
+        if await _panel_already_exists(ch, "Middleman"):
+            print(f"Middleman panel already present in {PANEL_CHANNEL_MM} — skip")
+        else:
+            embed = discord.Embed(
+                title="❄ Middleman (MM)",
+                description=(
+                    "```\n"
+                    "╔══════════════════════════════╗\n"
+                    "║    SECURE TRADE MIDDLEMAN    ║\n"
+                    "╚══════════════════════════════╝\n"
+                    "```\n"
+                    "Safe trades only — pick your service below.\n\n"
+                    "🟡 **Cross Trades**\n"
+                    "🥇 **OG Trades**\n"
+                    "🥈 **1B+ Trades**\n"
+                    "🥉 **500M Trades**\n"
+                    "✅ **0–250M Trades**\n\n"
+                    "*Tip your MM. Stay secure.*"
+                ),
+                color=THEME_COLOR
+            )
+            embed.set_footer(text=FOOTER_TEXT)
+            await ch.send(embed=embed, view=MiddlemanView())
+            print(f"Middleman panel posted in {PANEL_CHANNEL_MM}")
     except Exception as e:
         print(f"Failed to post middleman panel: {e}")
 
     # Staff
     try:
         ch = bot.get_channel(PANEL_CHANNEL_STAFF) or await bot.fetch_channel(PANEL_CHANNEL_STAFF)
-        await _clear_bot_messages(ch)
-        embed = discord.Embed(
-            title="❄ Staff & Team Opportunities",
-            description=(
-                "```\n"
-                "╔══════════════════════════════╗\n"
-                "║     JOIN THE BRAINROT TEAM   ║\n"
-                "╚══════════════════════════════╝\n"
-                "```\n"
-                "Interested in joining? Open a private ticket below.\n\n"
-                "📝 **Staff Application** — apply for staff\n"
-                "🎟️ **Pay for Rolls** — purchase staff rolls\n"
-                "📦 **Index Provider** — become an index provider\n"
-                "🤝 **Middleman Application** — become a middleman\n\n"
-                "*Every request is reviewed carefully.*"
-            ),
-            color=THEME_COLOR
-        )
-        embed.set_footer(text=FOOTER_TEXT)
-        await ch.send(embed=embed, view=StaffPanelView())
-        print(f"Staff panel posted in {PANEL_CHANNEL_STAFF}")
+        if await _panel_already_exists(ch, "Staff & Team"):
+            print(f"Staff panel already present in {PANEL_CHANNEL_STAFF} — skip")
+        else:
+            embed = discord.Embed(
+                title="❄ Staff & Team Opportunities",
+                description=(
+                    "```\n"
+                    "╔══════════════════════════════╗\n"
+                    "║     JOIN THE BRAINROT TEAM   ║\n"
+                    "╚══════════════════════════════╝\n"
+                    "```\n"
+                    "Interested in joining? Open a private ticket below.\n\n"
+                    "📝 **Staff Application** — apply for staff\n"
+                    "🎟️ **Pay for Rolls** — purchase staff rolls\n"
+                    "📦 **Index Provider** — become an index provider\n"
+                    "🤝 **Middleman Application** — become a middleman\n\n"
+                    "*Every request is reviewed carefully.*"
+                ),
+                color=THEME_COLOR
+            )
+            embed.set_footer(text=FOOTER_TEXT)
+            await ch.send(embed=embed, view=StaffPanelView())
+            print(f"Staff panel posted in {PANEL_CHANNEL_STAFF}")
     except Exception as e:
         print(f"Failed to post staff panel: {e}")
 
     # Reaction roles
     try:
         ch = bot.get_channel(PANEL_CHANNEL_REACTION) or await bot.fetch_channel(PANEL_CHANNEL_REACTION)
-        await _clear_bot_messages(ch)
-        embed = discord.Embed(
-            title="❄ Reaction Roles",
-            description=(
-                "```\n"
-                "╔══════════════════════════════╗\n"
-                "║      TOGGLE YOUR PINGS       ║\n"
-                "╚══════════════════════════════╝\n"
-                "```\n"
-                "Click the buttons below to **toggle** notification roles.\n"
-                "Only get pinged for what you care about.\n\n"
-                "🚨 **Important**  ·  🛒 **Shop**  ·  📊 **Poll**  ·  📢 **Announcement**\n"
-                "💤 **Dead Chat**  ·  💱 **Trade**  ·  🔓 **Leaks**  ·  🧠 **SAB**"
-            ),
-            color=THEME_COLOR
-        )
-        embed.set_footer(text=FOOTER_TEXT)
-        await ch.send(embed=embed, view=ReactionRoleView())
-        print(f"Reaction roles panel posted in {PANEL_CHANNEL_REACTION}")
+        if await _panel_already_exists(ch, "Reaction Roles"):
+            print(f"Reaction roles panel already present in {PANEL_CHANNEL_REACTION} — skip")
+        else:
+            embed = discord.Embed(
+                title="❄ Reaction Roles",
+                description=(
+                    "```\n"
+                    "╔══════════════════════════════╗\n"
+                    "║      TOGGLE YOUR PINGS       ║\n"
+                    "╚══════════════════════════════╝\n"
+                    "```\n"
+                    "Click the buttons below to **toggle** notification roles.\n"
+                    "Only get pinged for what you care about.\n\n"
+                    "🚨 **Important**  ·  🛒 **Shop**  ·  📊 **Poll**  ·  📢 **Announcement**\n"
+                    "💤 **Dead Chat**  ·  💱 **Trade**  ·  🔓 **Leaks**  ·  🧠 **SAB**"
+                ),
+                color=THEME_COLOR
+            )
+            embed.set_footer(text=FOOTER_TEXT)
+            await ch.send(embed=embed, view=ReactionRoleView())
+            print(f"Reaction roles panel posted in {PANEL_CHANNEL_REACTION}")
     except Exception as e:
         print(f"Failed to post reaction roles panel: {e}")
 
     # Server rules
     try:
         ch = bot.get_channel(PANEL_CHANNEL_RULES) or await bot.fetch_channel(PANEL_CHANNEL_RULES)
-        await _clear_bot_messages(ch)
-        embed = discord.Embed(
-            title="❄ Server Rules — STEAL A BRAINROT",
-            description=(
-                "```\n"
-                "╔══════════════════════════════╗\n"
-                "║      READ & FOLLOW RULES     ║\n"
-                "╚══════════════════════════════╝\n"
-                "```\n"
-                "Failure to comply with our server rules and Discord TOS will result in moderation.\n\n"
-                "🤝 **1. Respect** — Treat everyone with kindness and respect.\n\n"
-                "🚫 **2. No Spam** — No spam, wall text, excessive caps, or mass pings.\n\n"
-                "🔒 **3. Protect Information** — Do not share personal info (names, emails, passwords, IPs, face, addresses, etc.).\n\n"
-                "📢 **4. No Advertising** — DM advertising and server advertising are strictly against the rules.\n\n"
-                "🔞 **5. No NSFW** — No NSFW content, links, videos, websites, or 18+ servers.\n\n"
-                "❗ **6. 13+ Only** — You must be 13+ (Discord TOS).\n\n"
-                "❌ **7. No Racism** — Racism is not tolerated.\n\n"
-                "❌ **8. No Homophobia** — Do not be homophobic toward others.\n\n"
-                "🤬 **9. No Swearing** — Cussing is prohibited (including VC). *Damn* and *Hell* are the only accepted exceptions.\n\n"
-                "🏛️ **10. No Politics** — Avoid politics and similar topics.\n\n"
-                "🚨 **11. No Scamming** — Do not scam.\n\n"
-                "⚠️ **12. No Links** — Links are auto-deleted and will result in a warn.\n\n"
-                "*Use common sense. Breaking rules may result in moderator action.*"
-            ),
-            color=THEME_COLOR
-        )
-        embed.set_footer(text=FOOTER_TEXT)
-        await ch.send(embed=embed)
-        print(f"Rules panel posted in {PANEL_CHANNEL_RULES}")
+        if await _panel_already_exists(ch, "Server Rules"):
+            print(f"Rules panel already present in {PANEL_CHANNEL_RULES} — skip")
+        else:
+            embed = discord.Embed(
+                title="❄ Server Rules — STEAL A BRAINROT",
+                description=(
+                    "```\n"
+                    "╔══════════════════════════════╗\n"
+                    "║      READ & FOLLOW RULES     ║\n"
+                    "╚══════════════════════════════╝\n"
+                    "```\n"
+                    "Failure to comply with our server rules and Discord TOS will result in moderation.\n\n"
+                    "🤝 **1. Respect** — Treat everyone with kindness and respect.\n\n"
+                    "🚫 **2. No Spam** — No spam, wall text, excessive caps, or mass pings.\n\n"
+                    "🔒 **3. Protect Information** — Do not share personal info (names, emails, passwords, IPs, face, addresses, etc.).\n\n"
+                    "📢 **4. No Advertising** — DM advertising and server advertising are strictly against the rules.\n\n"
+                    "🔞 **5. No NSFW** — No NSFW content, links, videos, websites, or 18+ servers.\n\n"
+                    "❗ **6. 13+ Only** — You must be 13+ (Discord TOS).\n\n"
+                    "❌ **7. No Racism** — Racism is not tolerated.\n\n"
+                    "❌ **8. No Homophobia** — Do not be homophobic toward others.\n\n"
+                    "🤬 **9. No Swearing** — Cussing is prohibited (including VC). *Damn* and *Hell* are the only accepted exceptions.\n\n"
+                    "🏛️ **10. No Politics** — Avoid politics and similar topics.\n\n"
+                    "🚨 **11. No Scamming** — Do not scam.\n\n"
+                    "⚠️ **12. No Links** — Links are auto-deleted and will result in a warn.\n\n"
+                    "*Use common sense. Breaking rules may result in moderator action.*"
+                ),
+                color=THEME_COLOR
+            )
+            embed.set_footer(text=FOOTER_TEXT)
+            await ch.send(embed=embed)
+            print(f"Rules panel posted in {PANEL_CHANNEL_RULES}")
     except Exception as e:
         print(f"Failed to post rules panel: {e}")
 
     # Partnerships
     try:
         ch = bot.get_channel(PANEL_CHANNEL_PARTNERSHIPS) or await bot.fetch_channel(PANEL_CHANNEL_PARTNERSHIPS)
-        await _clear_bot_messages(ch)
-        embed = discord.Embed(
-            title="❄ How to Become a Partner",
-            description=(
-                "```\n"
-                "╔══════════════════════════════╗\n"
-                "║   STEAL A BRAINROT PARTNERS  ║\n"
-                "╚══════════════════════════════╝\n"
-                "```\n"
-                "Partner with **our** STEAL A BRAINROT community.\n"
-                "We work with other servers and brands that want real collabs — not spam.\n\n"
-                "**How to apply**\n"
-                "1️⃣ Click **Apply for Partnership** below\n"
-                "2️⃣ Fill the form in your private ticket\n"
-                "3️⃣ Wait for staff review\n\n"
-                "**Benefits if you get accepted**\n"
-                f"• Official <@&{PARTNERS_ROLE_ID}> role\n"
-                "• Access to **partner chat** — talk with other partners & staff\n"
-                "• Cross-promotion opportunities on our server\n"
-                "• Priority when running joint events / giveaways\n"
-                "• Listed as a trusted partner of STEAL A BRAINROT\n"
-                "• Direct line to our team for collabs\n\n"
-                "**What we look for**\n"
-                "• Active community (not dead / not a scam server)\n"
-                "• Fair offers both ways\n"
-                "• Follows Discord TOS & our rules\n\n"
-                "*Only apply if you're serious. Spam applications may be closed.*"
-            ),
-            color=THEME_COLOR,
-        )
-        embed.set_footer(text=FOOTER_TEXT)
-        await ch.send(embed=embed, view=PartnershipView())
-        print(f"Partnerships panel posted in {PANEL_CHANNEL_PARTNERSHIPS}")
+        if await _panel_already_exists(ch, "Partner"):
+            print(f"Partnerships panel already present in {PANEL_CHANNEL_PARTNERSHIPS} — skip")
+        else:
+            embed = discord.Embed(
+                title="❄ How to Become a Partner",
+                description=(
+                    "```\n"
+                    "╔══════════════════════════════╗\n"
+                    "║   STEAL A BRAINROT PARTNERS  ║\n"
+                    "╚══════════════════════════════╝\n"
+                    "```\n"
+                    "Partner with **our** STEAL A BRAINROT community.\n"
+                    "We work with other servers and brands that want real collabs — not spam.\n\n"
+                    "**How to apply**\n"
+                    "1️⃣ Click **Apply for Partnership** below\n"
+                    "2️⃣ Fill the form in your private ticket\n"
+                    "3️⃣ Wait for staff review\n\n"
+                    "**Benefits if you get accepted**\n"
+                    f"• Official <@&{PARTNERS_ROLE_ID}> role\n"
+                    "• Access to **partner chat** — talk with other partners & staff\n"
+                    "• Cross-promotion opportunities on our server\n"
+                    "• Priority when running joint events / giveaways\n"
+                    "• Listed as a trusted partner of STEAL A BRAINROT\n"
+                    "• Direct line to our team for collabs\n\n"
+                    "**What we look for**\n"
+                    "• Active community (not dead / not a scam server)\n"
+                    "• Fair offers both ways\n"
+                    "• Follows Discord TOS & our rules\n\n"
+                    "*Only apply if you're serious. Spam applications may be closed.*"
+                ),
+                color=THEME_COLOR,
+            )
+            embed.set_footer(text=FOOTER_TEXT)
+            await ch.send(embed=embed, view=PartnershipView())
+            print(f"Partnerships panel posted in {PANEL_CHANNEL_PARTNERSHIPS}")
     except Exception as e:
         print(f"Failed to post partnerships panel: {e}")
+
 
 
 # ==================== ANTI-NUKE HELPERS ====================
@@ -2077,7 +2113,7 @@ async def help(ctx):
             f"**Prefix:** `{PREFIX}`\n"
             "Higher perm can use lower perm commands.\n\n"
             "**Everyone**\n"
-            "`+help` `+ping` `+userinfo` `+serverinfo` `+snipe` `+avatar` `+roleinfo` `+mc`\n\n"
+            "`+help` `+ping` `+userinfo` `+serverinfo` `+snipe` `+i` `+avatar` `+roleinfo` `+mc`\n\n"
             "**Perm 1**\n"
             "`+warn` `+tempmute` `+unmute` `+mutelist` `+sanctions` `+perms` `+poll`\n\n"
             "**Perm 2**\n"
@@ -2252,6 +2288,60 @@ async def snipe(ctx):
     emb.add_field(name="Deleted", value=data.get("time", "?"), inline=True)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
+
+
+@bot.command(name="i", aliases=["I", "invites"])
+async def invites_cmd(ctx, *, target: str = None):
+    """+i [@user|user_id] — show how many invites a user has (sum of their invite uses)."""
+    user = None
+    if ctx.message.mentions:
+        user = ctx.message.mentions[0]
+    elif ctx.message.reference:
+        user = await get_target(ctx, None)
+    elif target:
+        user = await get_target(ctx, target)
+    user = user or ctx.author
+
+    try:
+        invites = await ctx.guild.invites()
+    except discord.Forbidden:
+        return await ctx.send("❌ I need the **Manage Server** permission to view invites.")
+    except Exception as e:
+        return await ctx.send(f"Failed to fetch invites: {e}")
+
+    total_uses = 0
+    invite_count = 0
+    lines = []
+    for inv in invites:
+        if inv.inviter and inv.inviter.id == user.id:
+            uses = inv.uses or 0
+            total_uses += uses
+            invite_count += 1
+            max_uses = inv.max_uses if inv.max_uses else "∞"
+            lines.append(f"`{inv.code}` — **{uses}** uses (max {max_uses})")
+
+    emb = discord.Embed(
+        title=f"❄ Invites — {BRAND_NAME}",
+        description=(
+            f"**User:** {user.mention} (`{user.id}`)\n"
+            f"**Total invites used:** `{total_uses}`\n"
+            f"**Active invite links:** `{invite_count}`"
+        ),
+        color=THEME_COLOR,
+        timestamp=datetime.now(timezone.utc),
+    )
+    emb.set_thumbnail(url=user.display_avatar.url)
+    if lines:
+        emb.add_field(
+            name="Links",
+            value="\n".join(lines[:15]) + ("\n…" if len(lines) > 15 else ""),
+            inline=False,
+        )
+    else:
+        emb.add_field(name="Links", value="*No active invite links created by this user.*", inline=False)
+    emb.set_footer(text=FOOTER_TEXT)
+    await ctx.send(embed=emb)
+
 
 @bot.command(aliases=["warns"])
 async def sanctions(ctx, *, target: str = None):

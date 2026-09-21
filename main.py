@@ -2290,7 +2290,7 @@ async def snipe(ctx):
     await ctx.send(embed=emb)
 
 
-@bot.command(name="i", aliases=["I", "invites"])
+@bot.command(name="i", aliases=["invites"])
 async def invites_cmd(ctx, *, target: str = None):
     """+i [@user|user_id] — show how many invites a user has (sum of their invite uses)."""
     user = None

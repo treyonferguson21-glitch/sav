@@ -2113,7 +2113,7 @@ async def help(ctx):
             f"**Prefix:** `{PREFIX}`\n"
             "Higher perm can use lower perm commands.\n\n"
             "**Everyone**\n"
-            "`+help` `+ping` `+userinfo` `+serverinfo` `+snipe` `+i` `+avatar` `+roleinfo` `+mc`\n\n"
+            "`+help` `+ping` `+userinfo` `+serverinfo` `+snipe` `+i` `+lb` `+avatar` `+roleinfo` `+mc`\n\n"
             "**Perm 1**\n"
             "`+warn` `+tempmute` `+unmute` `+mutelist` `+sanctions` `+perms` `+poll`\n\n"
             "**Perm 2**\n"
@@ -2339,6 +2339,48 @@ async def invites_cmd(ctx, *, target: str = None):
         )
     else:
         emb.add_field(name="Links", value="*No active invite links created by this user.*", inline=False)
+    emb.set_footer(text=FOOTER_TEXT)
+    await ctx.send(embed=emb)
+
+
+@bot.command(name="lb", aliases=["ilb"])
+async def invite_leaderboard(ctx):
+    """+lb — invite leaderboard (top inviters)."""
+    try:
+        invites = await ctx.guild.invites()
+    except discord.Forbidden:
+        return await ctx.send("❌ I need the **Manage Server** permission to view invites.")
+    except Exception as e:
+        return await ctx.send(f"Failed to fetch invites: {e}")
+
+    totals = {}  # user_id -> {"user": User, "uses": int}
+    for inv in invites:
+        if not inv.inviter:
+            continue
+        uid = inv.inviter.id
+        if uid not in totals:
+            totals[uid] = {"user": inv.inviter, "uses": 0}
+        totals[uid]["uses"] += inv.uses or 0
+
+    ranked = sorted(totals.values(), key=lambda x: x["uses"], reverse=True)
+    ranked = [r for r in ranked if r["uses"] > 0][:15]
+
+    if not ranked:
+        return await empty_result(ctx, "No invites recorded yet.")
+
+    medals = {1: "🥇", 2: "🥈", 3: "🥉"}
+    lines = []
+    for i, row in enumerate(ranked, 1):
+        medal = medals.get(i, f"**{i}.**")
+        u = row["user"]
+        lines.append(f"{medal} {u.mention} — **{row['uses']}** invite{'s' if row['uses'] != 1 else ''}")
+
+    emb = discord.Embed(
+        title=f"❄ Invite Leaderboard — {BRAND_NAME}",
+        description="\n".join(lines),
+        color=THEME_COLOR,
+        timestamp=datetime.now(timezone.utc),
+    )
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 

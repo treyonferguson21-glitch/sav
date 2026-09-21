@@ -38,56 +38,72 @@ PANEL_CHANNEL_MM = 1550996014419288065        # middleman panel
 PANEL_CHANNEL_STAFF = 1550996017720074374     # staff applications panel
 PANEL_CHANNEL_REACTION = 1550995981582082220  # reaction roles panel
 PANEL_CHANNEL_RULES = 1550999253667815557     # server rules panel
+PANEL_CHANNEL_PARTNERSHIPS = 1551270491665338399  # partnerships panel
+
+# SAB Leaks relay — when Sammy posts an announcement, forward here with images/text + ping
+SAB_LEAKS_CHANNEL_ID = 1550995978549731418
+SAB_LEAKS_ROLE_ID = 1551571055166885948  # Leaks Ping role
+# SpyderSammy — bot must share a guild with this user to relay announcements
+SAMMY_USER_IDS = [
+    "303327056274653197",
+]
+# Optional filters (empty / None = relay any message from Sammy user IDs above)
+SAMMY_ANNOUNCE_CHANNEL_IDS = []  # e.g. [announcement_channel_id]
+SAMMY_SOURCE_GUILD_ID = None     # e.g. official Steal a Brainrot guild ID
+
+# Partners role (granted when partnership is accepted)
+PARTNERS_ROLE_ID = 1550995876569423955
 
 # ==================== REACTION ROLES ====================
+# GIFs chosen to match each role theme (shown when user toggles the role)
 REACTION_ROLES = [
     {
         "id": 1550995943028166747,
         "label": "Important Ping",
         "emoji": "🚨",
-        "gif": "https://media.giphy.com/media/xT9IgG50Fb7Mi0prBC/giphy.gif",
+        "gif": "https://media.giphy.com/media/3o7aD2saalRwyBjUfu/giphy.gif",  # alert / urgent
     },
     {
         "id": 1550995945640951831,
         "label": "Shop Ping",
         "emoji": "🛒",
-        "gif": "https://media.giphy.com/media/3oEjI6SIIHBdRxXI40/giphy.gif",
+        "gif": "https://media.giphy.com/media/l0MYC0LajbaPoEADe/giphy.gif",  # shopping cart
     },
     {
         "id": 1550995948589551746,
         "label": "Poll Ping",
         "emoji": "📊",
-        "gif": "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",
+        "gif": "https://media.giphy.com/media/3oEjI9b3lF8zqFqv6U/giphy.gif",  # charts / poll
     },
     {
         "id": 1550995950997348396,
         "label": "Announcement Ping",
         "emoji": "📢",
-        "gif": "https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif",
+        "gif": "https://media.giphy.com/media/3o6Zt8zb1PqVxlF8sE/giphy.gif",  # megaphone / announce
     },
     {
         "id": 1550995954415444068,
         "label": "Dead Chat Ping",
         "emoji": "💤",
-        "gif": "https://media.giphy.com/media/3o7aCTPPm4OHfRLSH6/giphy.gif",
+        "gif": "https://media.giphy.com/media/3o7TKSjRrfIPjeiVyM/giphy.gif",  # sleeping / zzz
     },
     {
         "id": 1551571055129268244,
         "label": "Trade Ping",
         "emoji": "💱",
-        "gif": "https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif",
+        "gif": "https://media.giphy.com/media/l0HlNQ03J5JxX6lva/giphy.gif",  # exchange / trade
     },
     {
         "id": 1551571055166885948,
         "label": "Leaks Ping",
         "emoji": "🔓",
-        "gif": "https://media.giphy.com/media/3o6ZtpxSZbQRRnwCKQ/giphy.gif",
+        "gif": "https://media.giphy.com/media/3o6Zt6ML6BklcajjsA/giphy.gif",  # unlock / secret reveal
     },
     {
         "id": 1551571546789781594,
         "label": "SAB",
         "emoji": "🧠",
-        "gif": "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",
+        "gif": "https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif",  # brain / brainrot
     },
 ]
 REACTION_PANEL_GIF = "https://media.giphy.com/media/3o7btPCcdNniyf0ArS/giphy.gif"
@@ -102,6 +118,7 @@ RECRUITMENT_CATEGORY_ID = 1551278227417202790
 PAY_ROLES_CATEGORY_ID = 1551278772244979763
 INDEX_APP_CATEGORY_ID = 1551278848166076508
 MM_APP_CATEGORY_ID = 1551278466090139728
+PARTNERSHIP_CATEGORY_ID = 1551278227417202790  # partner tickets open here
 INVITE_REWARDS_CHANNEL_ID = 1550995989714698451
 
 # ==================== SPECIAL USERS ====================
@@ -650,6 +667,27 @@ class StaffPanelView(View):
         super().__init__(timeout=None)
         self.add_item(StaffPanelSelect())
 
+
+class PartnershipButton(Button):
+    def __init__(self):
+        super().__init__(
+            label="Apply for Partnership",
+            emoji="🤝",
+            style=discord.ButtonStyle.primary,
+            custom_id="partnership_apply",
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.defer(ephemeral=True)
+        await create_partnership_ticket(interaction)
+
+
+class PartnershipView(View):
+    def __init__(self):
+        super().__init__(timeout=None)
+        self.add_item(PartnershipButton())
+
+
 class ReactionRoleButton(Button):
     def __init__(self, role_id: int, label: str, emoji: str, gif: str = None):
         super().__init__(
@@ -926,6 +964,91 @@ async def create_staff_ticket(interaction, ticket_type):
 
     await channel.send(content=ping, embed=embed, view=TicketButtons())
     await interaction.followup.send(f"Ticket created: {channel.mention}", ephemeral=True)
+
+
+async def create_partnership_ticket(interaction):
+    guild = interaction.guild
+    member = interaction.user
+    try:
+        for channel in guild.text_channels:
+            if channel.topic == f"ticket-{member.id}":
+                return await interaction.followup.send(f"You already have an open ticket: {channel.mention}", ephemeral=True)
+
+        config["ticketCounter"] = config.get("ticketCounter", 0) + 1
+        save_config()
+        channel_name = clean_channel_name(f"partner-{member.name}")
+
+        overwrites = {
+            guild.default_role: discord.PermissionOverwrite(view_channel=False),
+            member: discord.PermissionOverwrite(view_channel=True, send_messages=True, attach_files=True, read_message_history=True),
+            guild.me: discord.PermissionOverwrite(view_channel=True, send_messages=True, manage_channels=True, manage_messages=True),
+        }
+        staff_role_ids = list(dict.fromkeys(HIGH_STAFF_ROLES + ADS_STAFF_ROLES + [TICKET_TEAM, TICKET_TEAM_T1]))
+        for rid in staff_role_ids:
+            role = guild.get_role(int(rid))
+            if role:
+                overwrites[role] = discord.PermissionOverwrite(
+                    view_channel=True, send_messages=True, attach_files=True,
+                    read_message_history=True, manage_messages=True,
+                )
+
+        category = guild.get_channel(PARTNERSHIP_CATEGORY_ID)
+        if category is None:
+            try:
+                category = await bot.fetch_channel(PARTNERSHIP_CATEGORY_ID)
+            except Exception:
+                category = None
+        if category is None or not isinstance(category, discord.CategoryChannel):
+            return await interaction.followup.send(
+                f"❌ Partnership category not found (ID: `{PARTNERSHIP_CATEGORY_ID}`). "
+                "Check the category ID and that the bot can see it.",
+                ephemeral=True,
+            )
+
+        channel = await guild.create_text_channel(
+            name=channel_name,
+            category=category,
+            topic=f"ticket-{member.id}",
+            overwrites=overwrites,
+        )
+
+        ping = get_staff_mentions("ads")
+        embed = discord.Embed(
+            title="🤝 Partnership Application — STEAL A BRAINROT",
+            description=(
+                f"Welcome {member.mention}!\n\n"
+                "You're applying to become an official **Partner** of this server.\n"
+                f"If accepted you receive the <@&{PARTNERS_ROLE_ID}> role and can chat in partner channels.\n\n"
+                "**Fill this form and send it here:**\n"
+                "```\n"
+                "1. Your Discord server / brand name:\n"
+                "2. Permanent invite link:\n"
+                "3. Member count:\n"
+                "4. What do you offer us? (ads, events, collabs, etc.)\n"
+                "5. What do you want from us?\n"
+                "6. Any previous partnerships?\n"
+                "7. Extra notes:\n"
+                "```\n"
+                "Staff will review your application. Stay patient.\n"
+                f"*Staff: use `+partner accept {member.mention}` when accepted.*"
+            ),
+            color=THEME_COLOR,
+        )
+        embed.set_footer(text="Partnerships • STEAL A BRAINROT")
+        await channel.send(content=ping or None, embed=embed, view=TicketButtons())
+        await interaction.followup.send(f"Partnership ticket created: {channel.mention}", ephemeral=True)
+    except discord.Forbidden:
+        await interaction.followup.send(
+            "❌ Bot is missing **Manage Channels** (or similar) permission to open partnership tickets.",
+            ephemeral=True,
+        )
+    except Exception as e:
+        print(f"create_partnership_ticket error: {e}")
+        try:
+            await interaction.followup.send(f"❌ Failed to open partnership ticket: {e}", ephemeral=True)
+        except Exception:
+            pass
+
 
 async def close_ticket(channel, closer):
     channel_name = channel.name
@@ -1434,6 +1557,45 @@ async def post_panels():
     except Exception as e:
         print(f"Failed to post rules panel: {e}")
 
+    # Partnerships
+    try:
+        ch = bot.get_channel(PANEL_CHANNEL_PARTNERSHIPS) or await bot.fetch_channel(PANEL_CHANNEL_PARTNERSHIPS)
+        await _clear_bot_messages(ch)
+        embed = discord.Embed(
+            title="❄ How to Become a Partner",
+            description=(
+                "```\n"
+                "╔══════════════════════════════╗\n"
+                "║   STEAL A BRAINROT PARTNERS  ║\n"
+                "╚══════════════════════════════╝\n"
+                "```\n"
+                "Partner with **our** STEAL A BRAINROT community.\n"
+                "We work with other servers and brands that want real collabs — not spam.\n\n"
+                "**How to apply**\n"
+                "1️⃣ Click **Apply for Partnership** below\n"
+                "2️⃣ Fill the form in your private ticket\n"
+                "3️⃣ Wait for staff review\n\n"
+                "**Benefits if you get accepted**\n"
+                f"• Official <@&{PARTNERS_ROLE_ID}> role\n"
+                "• Access to **partner chat** — talk with other partners & staff\n"
+                "• Cross-promotion opportunities on our server\n"
+                "• Priority when running joint events / giveaways\n"
+                "• Listed as a trusted partner of STEAL A BRAINROT\n"
+                "• Direct line to our team for collabs\n\n"
+                "**What we look for**\n"
+                "• Active community (not dead / not a scam server)\n"
+                "• Fair offers both ways\n"
+                "• Follows Discord TOS & our rules\n\n"
+                "*Only apply if you're serious. Spam applications may be closed.*"
+            ),
+            color=THEME_COLOR,
+        )
+        embed.set_footer(text=FOOTER_TEXT)
+        await ch.send(embed=embed, view=PartnershipView())
+        print(f"Partnerships panel posted in {PANEL_CHANNEL_PARTNERSHIPS}")
+    except Exception as e:
+        print(f"Failed to post partnerships panel: {e}")
+
 
 # ==================== ANTI-NUKE HELPERS ====================
 def _antinuke_is_immune(member) -> bool:
@@ -1603,6 +1765,7 @@ async def on_ready():
     bot.add_view(MiddlemanView())
     bot.add_view(StaffPanelView())
     bot.add_view(ReactionRoleView())
+    bot.add_view(PartnershipView())
 
     # Auto-post all panels
     await post_panels()
@@ -1684,10 +1847,80 @@ async def on_webhooks_update(channel):
     except Exception as e:
         print(f"anti-nuke webhook error: {e}")
 
+async def relay_sammy_announcement(message: discord.Message):
+    """Forward Sammy's announcement (text + images) to SAB leaks channel and ping Leaks role."""
+    if not SAMMY_USER_IDS:
+        return
+    if str(message.author.id) not in [str(x) for x in SAMMY_USER_IDS]:
+        return
+    if SAMMY_SOURCE_GUILD_ID is not None and message.guild and message.guild.id != SAMMY_SOURCE_GUILD_ID:
+        return
+    if SAMMY_ANNOUNCE_CHANNEL_IDS and message.channel.id not in SAMMY_ANNOUNCE_CHANNEL_IDS:
+        return
+    # Don't re-relay from the leaks channel itself
+    if message.channel.id == SAB_LEAKS_CHANNEL_ID:
+        return
+
+    target = bot.get_channel(SAB_LEAKS_CHANNEL_ID)
+    if target is None:
+        try:
+            target = await bot.fetch_channel(SAB_LEAKS_CHANNEL_ID)
+        except Exception as e:
+            print(f"SAB leaks channel fetch failed: {e}")
+            return
+
+    text = (message.content or "").strip()
+    files = []
+    image_urls = []
+    for att in message.attachments:
+        try:
+            data = await att.read()
+            files.append(discord.File(__import__("io").BytesIO(data), filename=att.filename))
+        except Exception:
+            if att.url:
+                image_urls.append(att.url)
+    # Also pick image embeds from the original message
+    for emb in message.embeds:
+        if emb.image and emb.image.url:
+            image_urls.append(emb.image.url)
+        if emb.thumbnail and emb.thumbnail.url:
+            image_urls.append(emb.thumbnail.url)
+
+    ping = f"<@&{SAB_LEAKS_ROLE_ID}>"
+    header = discord.Embed(
+        title="🔓 SAB Leaks — Sammy Announcement",
+        description=text or "*No text — see attachments/images below.*",
+        color=THEME_COLOR,
+        timestamp=datetime.now(timezone.utc),
+    )
+    header.set_author(name=str(message.author), icon_url=message.author.display_avatar.url)
+    header.add_field(name="Source", value=f"[Jump to message]({message.jump_url})", inline=False)
+    header.set_footer(text=FOOTER_TEXT)
+    if image_urls and not files:
+        header.set_image(url=image_urls[0])
+
+    try:
+        await target.send(content=ping, embed=header, files=files[:10] if files else None)
+        # Extra images beyond the first if we only had URLs
+        for url in image_urls[1:5]:
+            emb = discord.Embed(color=THEME_COLOR)
+            emb.set_image(url=url)
+            emb.set_footer(text=FOOTER_TEXT)
+            await target.send(embed=emb)
+        print(f"[SAB LEAKS] Relayed Sammy message from {message.author} ({message.id})")
+    except Exception as e:
+        print(f"SAB leaks relay failed: {e}")
+
+
 @bot.event
 async def on_message(message):
     if message.author.bot:
         return
+    # Relay Sammy announcements to SAB leaks (runs even across guilds the bot is in)
+    try:
+        await relay_sammy_announcement(message)
+    except Exception as e:
+        print(f"sammy relay error: {e}")
     if bot.user.mentioned_in(message) and not message.mention_everyone:
         content = message.content.replace(f"<@{bot.user.id}>", "").replace(f"<@!{bot.user.id}>", "").strip()
         if len(content) < 3:
@@ -1885,6 +2118,115 @@ async def antinuke_cmd(ctx, mode: str = None):
         ANTI_NUKE_ENABLED = False
         return await ctx.send(embed=discord.Embed(description="⚠️ Anti-nuke **disabled**.", color=0xFFAA00))
     return await cmd_usage(ctx, "`+antinuke [on|off|status]`")
+
+
+@bot.command(name="partner")
+async def partner_cmd(ctx, action: str = None, *, target: str = None):
+    """+partner accept @user | +partner remove @user — grant/remove Partners role (high staff / special)."""
+    if not has_high_staff_permission(ctx.author) and str(ctx.author.id) not in SPECIAL_USERS:
+        return await cmd_fail(ctx)
+    if not action or action.lower() not in ("accept", "add", "remove", "revoke", "deny"):
+        return await cmd_usage(ctx, "`+partner accept @user`  or  `+partner remove @user`")
+
+    user = None
+    if ctx.message.mentions:
+        user = ctx.message.mentions[0]
+    elif ctx.message.reference:
+        user = await get_target(ctx, None)
+    elif target:
+        # strip leftover action words if user typed "+partner accept @user"
+        cleaned = target.strip()
+        for word in ("accept", "add", "remove", "revoke", "deny"):
+            if cleaned.lower().startswith(word + " "):
+                cleaned = cleaned[len(word):].strip()
+        user = await get_target(ctx, cleaned)
+
+    if not user:
+        return await cmd_usage(ctx, "`+partner accept @user`  or  `+partner remove @user`")
+
+    member = await get_member(ctx.guild, user)
+    if not member:
+        return await ctx.send("Could not find that member on this server.")
+
+    role = ctx.guild.get_role(PARTNERS_ROLE_ID)
+    if not role:
+        return await ctx.send(
+            f"❌ Partners role not found (ID `{PARTNERS_ROLE_ID}`). "
+            "Create the role or fix the ID in the bot config."
+        )
+
+    if role >= ctx.guild.me.top_role:
+        return await ctx.send("❌ My role must be **above** the Partners role so I can assign it.")
+
+    act = action.lower()
+    try:
+        if act in ("accept", "add"):
+            if role in member.roles:
+                return await ctx.send(f"{member.mention} already has {role.mention}.")
+            await member.add_roles(role, reason=f"Partnership accepted by {ctx.author}")
+            emb = discord.Embed(
+                title=f"❄ Partner Accepted — {BRAND_NAME}",
+                description=(
+                    f"{member.mention} is now a **Partner**.\n"
+                    f"**Role:** {role.mention}\n"
+                    "They can now type in partner channels."
+                ),
+                color=THEME_COLOR,
+            )
+            emb.set_footer(text=FOOTER_TEXT)
+            await ctx.send(embed=emb)
+        else:
+            if role not in member.roles:
+                return await ctx.send(f"{member.mention} does not have {role.mention}.")
+            await member.remove_roles(role, reason=f"Partnership removed by {ctx.author}")
+            emb = discord.Embed(
+                title=f"❄ Partner Removed — {BRAND_NAME}",
+                description=f"Removed {role.mention} from {member.mention}.",
+                color=THEME_COLOR,
+            )
+            emb.set_footer(text=FOOTER_TEXT)
+            await ctx.send(embed=emb)
+    except discord.Forbidden:
+        await ctx.send("❌ Missing permission to manage the Partners role (bot role hierarchy / Manage Roles).")
+    except Exception as e:
+        await ctx.send(f"Failed: {e}")
+
+
+@bot.command(name="setsammy")
+async def setsammy_cmd(ctx, action: str = None, user_id: str = None):
+    """+setsammy add|remove|list [user_id] — configure Sammy user IDs for SAB leaks relay (Special only)."""
+    global SAMMY_USER_IDS
+    if str(ctx.author.id) not in SPECIAL_USERS:
+        return await cmd_fail(ctx)
+    if action is None or action.lower() in ("list", "status"):
+        ids = SAMMY_USER_IDS or ["*(none set — relay disabled)*"]
+        emb = discord.Embed(
+            title=f"❄ Sammy Relay — {BRAND_NAME}",
+            description=(
+                f"**Leaks channel:** <#{SAB_LEAKS_CHANNEL_ID}>\n"
+                f"**Ping role:** <@&{SAB_LEAKS_ROLE_ID}>\n"
+                f"**Tracked IDs:**\n" + "\n".join(f"• `{i}`" for i in ids)
+            ),
+            color=THEME_COLOR,
+        )
+        emb.set_footer(text=FOOTER_TEXT)
+        return await ctx.send(embed=emb, allowed_mentions=discord.AllowedMentions.none())
+    a = action.lower()
+    if a in ("add", "set") and user_id:
+        uid = user_id.strip().replace("<@", "").replace("!", "").replace(">", "")
+        if not uid.isdigit():
+            return await cmd_usage(ctx, "`+setsammy add <user_id>`")
+        if uid not in SAMMY_USER_IDS:
+            SAMMY_USER_IDS.append(uid)
+        return await ctx.send(embed=discord.Embed(description=f"✅ Sammy ID `{uid}` added. Relay active when bot sees their messages.", color=THEME_COLOR))
+    if a in ("remove", "del", "rm") and user_id:
+        uid = user_id.strip().replace("<@", "").replace("!", "").replace(">", "")
+        if uid in SAMMY_USER_IDS:
+            SAMMY_USER_IDS.remove(uid)
+            return await ctx.send(embed=discord.Embed(description=f"✅ Removed `{uid}` from Sammy list.", color=THEME_COLOR))
+        return await ctx.send("That ID was not in the list.")
+    return await cmd_usage(ctx, "`+setsammy [list|add <id>|remove <id>]`")
+
 
 @bot.command()
 async def perms(ctx):

@@ -12,8 +12,8 @@ from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # ============================================================
-# Malikhias MM — Full Merged Ticket + Moderation Bot
-# Theme: pure black / white aggressive (matches PFP)
+# SAB KINGDOM — Full Merged Ticket + Moderation Bot
+# Theme: vibrant orange / yellow (matches SAB KINGDOM banners & PFP)
 # ============================================================
 
 TOKEN = os.environ.get("DISCORD_BOT_TOKEN") or os.environ.get("TOKEN")
@@ -7115,10 +7115,10 @@ def _banner_file(banner_name: str):
     return discord.File(io.BytesIO(raw), filename=banner_name)
 
 
-THEME_COLOR = 0xFFFFFF  # pure white (matches malikhias mm PFP)
-THEME_COLOR_ALT = 0xCCCCCC  # light gray accent
-FOOTER_TEXT = "⚡ Malikhias MM • Server Services"
-BRAND_NAME = "Malikhias MM"
+THEME_COLOR = 0xFF8C00  # vibrant orange (matches SAB KINGDOM banners)
+THEME_COLOR_ALT = 0xFFAA00  # golden yellow accent
+FOOTER_TEXT = "⚡ SAB KINGDOM • Server Services"
+BRAND_NAME = "SAB KINGDOM"
 
 # ==================== CHANNELS ====================
 LOG_CHANNEL_ID = 1550996038159179898
@@ -7897,7 +7897,7 @@ async def create_ticket(interaction, ticket_type):
     channel = await guild.create_text_channel(name=channel_name, category=category, topic=f"ticket-{member.id}", overwrites=overwrites)
 
     if ticket_type == "support":
-        embed = discord.Embed(title=f"⚡ Ticket opened by {member.name}", description="Thank you for contacting **Malikhias MM** support.\nPlease describe your issue and wait for a response.", color=THEME_COLOR)
+        embed = discord.Embed(title=f"⚡ Ticket opened by {member.name}", description="Thank you for contacting **SAB KINGDOM** support.\nPlease describe your issue and wait for a response.", color=THEME_COLOR)
     elif ticket_type == "scammer":
         embed = discord.Embed(title=f"⚡ Scammer Report — {member.name}", description="**SCAMMER REPORT SERVICE**\n\nPlease follow the format:\n\n`DISCORDIDOFSCAMMER - ID`\n`DISCORDIDOFVICTIM - ID`\n`ROBLOXUSEROFSCAMMER - USER`\n`ROBLOXUSEROFVICTIM - USER`\n\n**Deal:** (ex: Robux for Brainrots)\n**Evidences:** Screens / Records only", color=THEME_COLOR)
     elif ticket_type == "reward":
@@ -8043,17 +8043,17 @@ async def create_staff_ticket(interaction, ticket_type):
     ping = recruitment_ping if ticket_type == "recruitment" else high_staff_ping
 
     if ticket_type == "recruitment":
-        embed = discord.Embed(title="📝 Staff Application", description=f"Welcome {member.mention}! Thanks for applying to **Malikhias MM**.\n\n**Application Form**\n```\n1. Discord Username:\n2. Age:\n3. Fluent in English?\n4. Days active per week:\n5. Hours online per day:\n6. How would you handle a toxic member?\n7. Previous staff experience?\n8. Why do you want to join staff?\n9. Anything else?\n```\nCopy, fill, and send.", color=THEME_COLOR)
-        embed.set_footer(text="Staff Recruitment • Malikhias MM")
+        embed = discord.Embed(title="📝 Staff Application", description=f"Welcome {member.mention}! Thanks for applying to **SAB KINGDOM**.\n\n**Application Form**\n```\n1. Discord Username:\n2. Age:\n3. Fluent in English?\n4. Days active per week:\n5. Hours online per day:\n6. How would you handle a toxic member?\n7. Previous staff experience?\n8. Why do you want to join staff?\n9. Anything else?\n```\nCopy, fill, and send.", color=THEME_COLOR)
+        embed.set_footer(text="Staff Recruitment • SAB KINGDOM")
     elif ticket_type == "payrolls":
         embed = discord.Embed(title="🎟️ Pay for Rolls", description=f"Ticket opened by {member.mention}\n\n**Staff Pay Rates**\n```\nTest Mod — 2 Garams\nModerator — 3 Garams\nSenior Mod — 4 Garams\nHead Staff — 5 Garams\nAdmin — 7 Garams / 1 Colored Garam\n```\nTell us which role and what you offer.", color=THEME_COLOR)
-        embed.set_footer(text="Pay for Rolls • Malikhias MM")
+        embed.set_footer(text="Pay for Rolls • SAB KINGDOM")
     elif ticket_type == "indexprovider":
         embed = discord.Embed(title="📦 Index Provider Application", description=f"Welcome {member.mention}!\n\n**Payment & Collat:** 1+ Drag\n\nTell us why you want to be an index provider, how active you are, and any experience.", color=THEME_COLOR)
-        embed.set_footer(text="Index Provider • Malikhias MM")
+        embed.set_footer(text="Index Provider • SAB KINGDOM")
     else:
         embed = discord.Embed(title="🤝 Middleman Application", description=f"Welcome {member.mention}!\n\n**Payment & Collat:** 1+ Drag\n\nTell us why you want to middleman, how often you can be online, and past experience.", color=THEME_COLOR)
-        embed.set_footer(text="Middleman Application • Malikhias MM")
+        embed.set_footer(text="Middleman Application • SAB KINGDOM")
 
     await channel.send(content=ping, embed=embed, view=TicketButtons())
     await interaction.followup.send(f"Ticket created: {channel.mention}", ephemeral=True)
@@ -8107,7 +8107,7 @@ async def create_partnership_ticket(interaction):
 
         ping = get_staff_mentions("ads")
         embed = discord.Embed(
-            title="🤝 Partnership Application — Malikhias MM",
+            title="🤝 Partnership Application — SAB KINGDOM",
             description=(
                 f"Welcome {member.mention}!\n\n"
                 "You're applying to become an official **Partner** of this server.\n"
@@ -8127,7 +8127,7 @@ async def create_partnership_ticket(interaction):
             ),
             color=THEME_COLOR,
         )
-        embed.set_footer(text="Partnerships • Malikhias MM")
+        embed.set_footer(text="Partnerships • SAB KINGDOM")
         await channel.send(content=ping or None, embed=embed, view=TicketButtons())
         await interaction.followup.send(f"Partnership ticket created: {channel.mention}", ephemeral=True)
     except discord.Forbidden:
@@ -8333,7 +8333,7 @@ def find_role(guild, query):
             return candidates[0]
     return None
 
-CMD_FAIL_MSG = "I'm sorry this command you tried to use is not going to work with your perm or u just did the command wrong — Malikhias MM"
+CMD_FAIL_MSG = "I'm sorry this command you tried to use is not going to work with your perm or u just did the command wrong — SAB KINGDOM"
 
 async def cmd_fail(ctx):
     try:
@@ -8697,7 +8697,7 @@ async def post_panels():
         embed = discord.Embed(
             title="⚡  Partnerships",
             description=(
-                "Partner with **Malikhias MM**.\n"
+                "Partner with **SAB KINGDOM**.\n"
                 "We work with servers and brands that want real collabs — not spam."
             ),
             color=THEME_COLOR,
@@ -8799,7 +8799,7 @@ async def _antinuke_punish(guild: discord.Guild, member: discord.Member, action:
                         pass
         # Log
         emb = discord.Embed(
-            title="🚨 ANTI-NUKE TRIGGERED — Malikhias MM",
+            title="🚨 ANTI-NUKE TRIGGERED — SAB KINGDOM",
             description=(
                 f"**User:** {member.mention} (`{member.id}`)\n"
                 f"**Action:** mass `{action}`\n"
@@ -8878,11 +8878,11 @@ async def find_used_invite(guild):
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user} (ID: {bot.user.id})")
-    print("Malikhias MM bot is ready!")
-    # DND status + Streaming "malikhias MM tickets"
+    print("SAB KINGDOM bot is ready!")
+    # DND status + Streaming "SAB KINGDOM tickets"
     await bot.change_presence(
         status=discord.Status.dnd,
-        activity=discord.Streaming(name="malikhias MM tickets", url="https://www.twitch.tv/discord"),
+        activity=discord.Streaming(name="SAB KINGDOM tickets", url="https://www.twitch.tv/discord"),
     )
     for guild in bot.guilds:
         try:
@@ -9063,8 +9063,10 @@ async def on_message(message):
     except Exception as e:
         print(f"sammy relay error: {e}")
     if bot.user.mentioned_in(message) and not message.mention_everyone:
+        # Do not reply with prefix when the message is a reply to the bot (or any reply)
+        is_reply = message.reference is not None
         content = message.content.replace(f"<@{bot.user.id}>", "").replace(f"<@!{bot.user.id}>", "").strip()
-        if len(content) < 3:
+        if len(content) < 3 and not is_reply:
             await message.channel.send(f"My prefix on this server is: `{PREFIX}`")
             return
     if await filter_bad_content(message):
@@ -9376,6 +9378,36 @@ async def perms(ctx):
     for level in sorted(ROLES.keys()):
         mentions = [ctx.guild.get_role(rid).mention for rid in cache.get(level, []) if ctx.guild.get_role(rid)]
         emb.add_field(name=f"▸ Perm {level}", value="\n".join(mentions) or "*None*", inline=False)
+
+    # Special users section — look like pings but no real mentions, with cmds in a box
+    special_lines = []
+    for uid in SPECIAL_USERS:
+        try:
+            user = await bot.fetch_user(int(uid))
+            name = f"@{user.name}"
+        except Exception:
+            name = f"@Unknown"
+            user = None
+        cmds = "+ban  +unban  +kick  +bl  +unbl  +softban  (full power)"
+        if uid == "1495975678863085670":
+            cmds = "+ban  +unban  +kick  (no blacklist)"
+        special_lines.append(f"**{name}** (`{uid}`)\n```\n{cmds}\n```")
+    # Also show the limited user if not in SPECIAL
+    limited = "1495975678863085670"
+    if limited not in SPECIAL_USERS:
+        try:
+            user = await bot.fetch_user(int(limited))
+            name = f"@{user.name}"
+        except Exception:
+            name = "@Unknown"
+        special_lines.append(f"**{name}** (`{limited}`)\n```\n+ban  +unban  +kick  (no blacklist)\n```")
+
+    if special_lines:
+        emb.add_field(
+            name="⚡ Special Command Access",
+            value="\n".join(special_lines),
+            inline=False,
+        )
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb, allowed_mentions=discord.AllowedMentions.none())
 
@@ -10752,7 +10784,7 @@ class _HealthHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(b"Malikhias MM Bot is online")
+        self.wfile.write(b"SAB KINGDOM Bot is online")
     def log_message(self, format, *args):
         return
 

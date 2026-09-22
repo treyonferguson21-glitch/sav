@@ -12,8 +12,8 @@ from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # ============================================================
-# STEAL A BRAINROT — Full Merged Ticket + Moderation Bot
-# Theme: neon ice cyan (panel banners embedded in this file)
+# Malikhias MM — Full Merged Ticket + Moderation Bot
+# Theme: pure black / white aggressive (matches PFP)
 # ============================================================
 
 TOKEN = os.environ.get("DISCORD_BOT_TOKEN") or os.environ.get("TOKEN")
@@ -7115,10 +7115,10 @@ def _banner_file(banner_name: str):
     return discord.File(io.BytesIO(raw), filename=banner_name)
 
 
-THEME_COLOR = 0x00D4FF  # neon ice cyan
-THEME_COLOR_ALT = 0xA855F7  # neon purple accent
-FOOTER_TEXT = "❄ STEAL A BRAINROT • Server Services"
-BRAND_NAME = "STEAL A BRAINROT"
+THEME_COLOR = 0xFFFFFF  # pure white (matches malikhias mm PFP)
+THEME_COLOR_ALT = 0xCCCCCC  # light gray accent
+FOOTER_TEXT = "⚡ Malikhias MM • Server Services"
+BRAND_NAME = "Malikhias MM"
 
 # ==================== CHANNELS ====================
 LOG_CHANNEL_ID = 1550996038159179898
@@ -7676,7 +7676,7 @@ class TicketSelect(Select):
             discord.SelectOption(label="Promote / Ads", description="Advertise your server or content.", value="ads", emoji="📢"),
             discord.SelectOption(label="Pay for Rolls", description="Purchase secure rolls.", value="rolls", emoji="💰"),
         ]
-        super().__init__(placeholder="❄ Select a service…", min_values=1, max_values=1, options=options, custom_id="ticket_select")
+        super().__init__(placeholder="⚡ Select a service…", min_values=1, max_values=1, options=options, custom_id="ticket_select")
 
     async def callback(self, interaction):
         await interaction.response.defer(ephemeral=True)
@@ -7704,7 +7704,7 @@ class IndexSelect(Select):
             discord.SelectOption(label="Phantom Base", description=INDEX_PRICES["phantom"], value="phantom", emoji="👻"),
             discord.SelectOption(label="Crystal Base", description=INDEX_PRICES["crystal"], value="crystal", emoji="💎"),
         ]
-        super().__init__(placeholder="❄ Select a base to index…", min_values=1, max_values=1, options=options, custom_id="index_select")
+        super().__init__(placeholder="⚡ Select a base to index…", min_values=1, max_values=1, options=options, custom_id="index_select")
 
     async def callback(self, interaction):
         await interaction.response.defer(ephemeral=True)
@@ -7739,7 +7739,7 @@ class MiddlemanSelect(Select):
             discord.SelectOption(label="500M Trades", description="500M middleman", value="500m", emoji="🥉"),
             discord.SelectOption(label="0-250M Trades", description="0 to 250M middleman", value="0-250m", emoji="✅"),
         ]
-        super().__init__(placeholder="❄ Select a trade service…", min_values=1, max_values=1, options=options, custom_id="middleman_select")
+        super().__init__(placeholder="⚡ Select a trade service…", min_values=1, max_values=1, options=options, custom_id="middleman_select")
 
     async def callback(self, interaction):
         await interaction.response.send_modal(MiddlemanModal(self.values[0]))
@@ -7757,7 +7757,7 @@ class StaffPanelSelect(Select):
             discord.SelectOption(label="Index Provider", description="Apply to become an index provider", value="indexprovider", emoji="📦"),
             discord.SelectOption(label="Middleman Application", description="Apply to become a middleman", value="mmapplication", emoji="🤝"),
         ]
-        super().__init__(placeholder="❄ Choose a staff option…", min_values=1, max_values=1, options=options, custom_id="staff_panel_select")
+        super().__init__(placeholder="⚡ Choose a staff option…", min_values=1, max_values=1, options=options, custom_id="staff_panel_select")
 
     async def callback(self, interaction):
         await interaction.response.defer(ephemeral=True)
@@ -7897,15 +7897,15 @@ async def create_ticket(interaction, ticket_type):
     channel = await guild.create_text_channel(name=channel_name, category=category, topic=f"ticket-{member.id}", overwrites=overwrites)
 
     if ticket_type == "support":
-        embed = discord.Embed(title=f"❄ Ticket opened by {member.name}", description="Thank you for contacting **STEAL A BRAINROT** support.\nPlease describe your issue and wait for a response.", color=THEME_COLOR)
+        embed = discord.Embed(title=f"⚡ Ticket opened by {member.name}", description="Thank you for contacting **Malikhias MM** support.\nPlease describe your issue and wait for a response.", color=THEME_COLOR)
     elif ticket_type == "scammer":
-        embed = discord.Embed(title=f"❄ Scammer Report — {member.name}", description="**SCAMMER REPORT SERVICE**\n\nPlease follow the format:\n\n`DISCORDIDOFSCAMMER - ID`\n`DISCORDIDOFVICTIM - ID`\n`ROBLOXUSEROFSCAMMER - USER`\n`ROBLOXUSEROFVICTIM - USER`\n\n**Deal:** (ex: Robux for Brainrots)\n**Evidences:** Screens / Records only", color=THEME_COLOR)
+        embed = discord.Embed(title=f"⚡ Scammer Report — {member.name}", description="**SCAMMER REPORT SERVICE**\n\nPlease follow the format:\n\n`DISCORDIDOFSCAMMER - ID`\n`DISCORDIDOFVICTIM - ID`\n`ROBLOXUSEROFSCAMMER - USER`\n`ROBLOXUSEROFVICTIM - USER`\n\n**Deal:** (ex: Robux for Brainrots)\n**Evidences:** Screens / Records only", color=THEME_COLOR)
     elif ticket_type == "reward":
-        embed = discord.Embed(title=f"❄ Reward Claim — {member.name}", description="**REWARD CLAIMING SERVICE**\n\n`DISCORDIDOFWINNER - ID`\n`ROBLOXUSEROFWINNER - USER`\n\n**Prize:**\n**Evidences:**", color=THEME_COLOR)
+        embed = discord.Embed(title=f"⚡ Reward Claim — {member.name}", description="**REWARD CLAIMING SERVICE**\n\n`DISCORDIDOFWINNER - ID`\n`ROBLOXUSEROFWINNER - USER`\n\n**Prize:**\n**Evidences:**", color=THEME_COLOR)
     elif ticket_type == "ads":
-        embed = discord.Embed(title=f"❄ Promote Your Server — {member.name}", description="**📢 Promote Your Server!**\n\n**Package 1:** 2 Days | 1 Ping\n**Package 2:** 3 Days | 2 Pings\n**Package 3:** 7 Days | 4 Pings\n**Package 4:** 12 Days | 6 Pings\n\nTell us which package you want.", color=THEME_COLOR)
+        embed = discord.Embed(title=f"⚡ Promote Your Server — {member.name}", description="**📢 Promote Your Server!**\n\n**Package 1:** 2 Days | 1 Ping\n**Package 2:** 3 Days | 2 Pings\n**Package 3:** 7 Days | 4 Pings\n**Package 4:** 12 Days | 6 Pings\n\nTell us which package you want.", color=THEME_COLOR)
     else:
-        embed = discord.Embed(title=f"❄ Pay for Rolls — {member.name}", description="**💰 Pay for Rolls**\n\nTell us how many rolls and what you are offering.", color=THEME_COLOR)
+        embed = discord.Embed(title=f"⚡ Pay for Rolls — {member.name}", description="**💰 Pay for Rolls**\n\nTell us how many rolls and what you are offering.", color=THEME_COLOR)
 
     embed.set_footer(text=FOOTER_TEXT)
     await channel.send(content=get_staff_mentions(ticket_type), embed=embed, view=TicketButtons())
@@ -8043,17 +8043,17 @@ async def create_staff_ticket(interaction, ticket_type):
     ping = recruitment_ping if ticket_type == "recruitment" else high_staff_ping
 
     if ticket_type == "recruitment":
-        embed = discord.Embed(title="📝 Staff Application", description=f"Welcome {member.mention}! Thanks for applying to **STEAL A BRAINROT**.\n\n**Application Form**\n```\n1. Discord Username:\n2. Age:\n3. Fluent in English?\n4. Days active per week:\n5. Hours online per day:\n6. How would you handle a toxic member?\n7. Previous staff experience?\n8. Why do you want to join staff?\n9. Anything else?\n```\nCopy, fill, and send.", color=THEME_COLOR)
-        embed.set_footer(text="Staff Recruitment • STEAL A BRAINROT")
+        embed = discord.Embed(title="📝 Staff Application", description=f"Welcome {member.mention}! Thanks for applying to **Malikhias MM**.\n\n**Application Form**\n```\n1. Discord Username:\n2. Age:\n3. Fluent in English?\n4. Days active per week:\n5. Hours online per day:\n6. How would you handle a toxic member?\n7. Previous staff experience?\n8. Why do you want to join staff?\n9. Anything else?\n```\nCopy, fill, and send.", color=THEME_COLOR)
+        embed.set_footer(text="Staff Recruitment • Malikhias MM")
     elif ticket_type == "payrolls":
         embed = discord.Embed(title="🎟️ Pay for Rolls", description=f"Ticket opened by {member.mention}\n\n**Staff Pay Rates**\n```\nTest Mod — 2 Garams\nModerator — 3 Garams\nSenior Mod — 4 Garams\nHead Staff — 5 Garams\nAdmin — 7 Garams / 1 Colored Garam\n```\nTell us which role and what you offer.", color=THEME_COLOR)
-        embed.set_footer(text="Pay for Rolls • STEAL A BRAINROT")
+        embed.set_footer(text="Pay for Rolls • Malikhias MM")
     elif ticket_type == "indexprovider":
         embed = discord.Embed(title="📦 Index Provider Application", description=f"Welcome {member.mention}!\n\n**Payment & Collat:** 1+ Drag\n\nTell us why you want to be an index provider, how active you are, and any experience.", color=THEME_COLOR)
-        embed.set_footer(text="Index Provider • STEAL A BRAINROT")
+        embed.set_footer(text="Index Provider • Malikhias MM")
     else:
         embed = discord.Embed(title="🤝 Middleman Application", description=f"Welcome {member.mention}!\n\n**Payment & Collat:** 1+ Drag\n\nTell us why you want to middleman, how often you can be online, and past experience.", color=THEME_COLOR)
-        embed.set_footer(text="Middleman Application • STEAL A BRAINROT")
+        embed.set_footer(text="Middleman Application • Malikhias MM")
 
     await channel.send(content=ping, embed=embed, view=TicketButtons())
     await interaction.followup.send(f"Ticket created: {channel.mention}", ephemeral=True)
@@ -8107,7 +8107,7 @@ async def create_partnership_ticket(interaction):
 
         ping = get_staff_mentions("ads")
         embed = discord.Embed(
-            title="🤝 Partnership Application — STEAL A BRAINROT",
+            title="🤝 Partnership Application — Malikhias MM",
             description=(
                 f"Welcome {member.mention}!\n\n"
                 "You're applying to become an official **Partner** of this server.\n"
@@ -8127,7 +8127,7 @@ async def create_partnership_ticket(interaction):
             ),
             color=THEME_COLOR,
         )
-        embed.set_footer(text="Partnerships • STEAL A BRAINROT")
+        embed.set_footer(text="Partnerships • Malikhias MM")
         await channel.send(content=ping or None, embed=embed, view=TicketButtons())
         await interaction.followup.send(f"Partnership ticket created: {channel.mention}", ephemeral=True)
     except discord.Forbidden:
@@ -8333,7 +8333,7 @@ def find_role(guild, query):
             return candidates[0]
     return None
 
-CMD_FAIL_MSG = "I'm sorry this command you tried to use is not going to work with your perm or u just did the command wrong — STEAL A BRAINROT"
+CMD_FAIL_MSG = "I'm sorry this command you tried to use is not going to work with your perm or u just did the command wrong — Malikhias MM"
 
 async def cmd_fail(ctx):
     try:
@@ -8536,7 +8536,7 @@ async def post_panels():
     try:
         ch = bot.get_channel(PANEL_CHANNEL_SUPPORT) or await bot.fetch_channel(PANEL_CHANNEL_SUPPORT)
         embed = discord.Embed(
-            title="❄  Server Services",
+            title="⚡  Server Services",
             description=(
                 "Need help? Open a **private ticket** with the menu below.\n"
                 "A staff member will assist you shortly."
@@ -8559,7 +8559,7 @@ async def post_panels():
     try:
         ch = bot.get_channel(PANEL_CHANNEL_INDEX) or await bot.fetch_channel(PANEL_CHANNEL_INDEX)
         embed = discord.Embed(
-            title="❄  Index Department",
+            title="⚡  Index Department",
             description=(
                 "Select a **base** below to open an index ticket.\n"
                 "Staff will handle your request in a private channel."
@@ -8595,7 +8595,7 @@ async def post_panels():
     try:
         ch = bot.get_channel(PANEL_CHANNEL_MM) or await bot.fetch_channel(PANEL_CHANNEL_MM)
         embed = discord.Embed(
-            title="❄  Middleman",
+            title="⚡  Middleman",
             description=(
                 "Safe trades only. Pick your service below and a middleman will assist.\n"
                 "*Tip your MM. Stay secure.*"
@@ -8618,7 +8618,7 @@ async def post_panels():
     try:
         ch = bot.get_channel(PANEL_CHANNEL_STAFF) or await bot.fetch_channel(PANEL_CHANNEL_STAFF)
         embed = discord.Embed(
-            title="❄  Staff & Team",
+            title="⚡  Staff & Team",
             description=(
                 "Interested in joining the team? Open a private ticket below.\n"
                 "Every application is reviewed carefully."
@@ -8641,7 +8641,7 @@ async def post_panels():
     try:
         ch = bot.get_channel(PANEL_CHANNEL_REACTION) or await bot.fetch_channel(PANEL_CHANNEL_REACTION)
         embed = discord.Embed(
-            title="❄  Reaction Roles",
+            title="⚡  Reaction Roles",
             description=(
                 "Click the buttons below to **toggle** notification roles.\n"
                 "Only get pinged for what you care about."
@@ -8667,7 +8667,7 @@ async def post_panels():
     try:
         ch = bot.get_channel(PANEL_CHANNEL_RULES) or await bot.fetch_channel(PANEL_CHANNEL_RULES)
         embed = discord.Embed(
-            title="❄  Server Rules",
+            title="⚡  Server Rules",
             description=(
                 "Failure to follow these rules or Discord TOS will result in moderation.\n"
                 "Use common sense."
@@ -8695,9 +8695,9 @@ async def post_panels():
     try:
         ch = bot.get_channel(PANEL_CHANNEL_PARTNERSHIPS) or await bot.fetch_channel(PANEL_CHANNEL_PARTNERSHIPS)
         embed = discord.Embed(
-            title="❄  Partnerships",
+            title="⚡  Partnerships",
             description=(
-                "Partner with **STEAL A BRAINROT**.\n"
+                "Partner with **Malikhias MM**.\n"
                 "We work with servers and brands that want real collabs — not spam."
             ),
             color=THEME_COLOR,
@@ -8799,7 +8799,7 @@ async def _antinuke_punish(guild: discord.Guild, member: discord.Member, action:
                         pass
         # Log
         emb = discord.Embed(
-            title="🚨 ANTI-NUKE TRIGGERED — STEAL A BRAINROT",
+            title="🚨 ANTI-NUKE TRIGGERED — Malikhias MM",
             description=(
                 f"**User:** {member.mention} (`{member.id}`)\n"
                 f"**Action:** mass `{action}`\n"
@@ -8878,11 +8878,11 @@ async def find_used_invite(guild):
 @bot.event
 async def on_ready():
     print(f"Logged in as {bot.user} (ID: {bot.user.id})")
-    print("STEAL A BRAINROT bot is ready!")
-    # DND + Streaming STEAL A BRAINROT
+    print("Malikhias MM bot is ready!")
+    # DND status + Streaming "malikhias MM tickets"
     await bot.change_presence(
         status=discord.Status.dnd,
-        activity=discord.Streaming(name="STEAL A BRAINROT", url="https://www.twitch.tv/discord"),
+        activity=discord.Streaming(name="malikhias MM tickets", url="https://www.twitch.tv/discord"),
     )
     for guild in bot.guilds:
         try:
@@ -9105,11 +9105,11 @@ async def on_member_join(member):
 
     try:
         ch = bot.get_channel(WELCOME_CHANNEL_ID) or await bot.fetch_channel(WELCOME_CHANNEL_ID)
-        desc = f"👏 Welcome {member.mention} to **{BRAND_NAME}**!\n*Stay icy.*"
+        desc = f"👏 Welcome {member.mention} to **{BRAND_NAME}**!\n*Stay dark.*"
         if is_new_account:
             desc += f"\n\n⚠️ **New account** — created {discord.utils.format_dt(member.created_at, 'R')}"
         emb = discord.Embed(
-            title="❄ New Member Joined!",
+            title="⚡ New Member Joined!",
             description=desc,
             color=THEME_COLOR,
             timestamp=datetime.now(timezone.utc)
@@ -9131,7 +9131,7 @@ async def on_member_join(member):
         try:
             tch = bot.get_channel(INVITE_TRACKER_ID) or await bot.fetch_channel(INVITE_TRACKER_ID)
             inv_emb = discord.Embed(
-                title="❄ Invite Tracker",
+                title="⚡ Invite Tracker",
                 description=(
                     f"**Member:** {member.mention} (`{member.id}`)\n"
                     f"**Inviter:** {inviter.mention if inviter else 'Unknown'}\n"
@@ -9163,7 +9163,7 @@ async def on_member_remove(member):
     try:
         ch = bot.get_channel(LEAVES_CHANNEL_ID) or await bot.fetch_channel(LEAVES_CHANNEL_ID)
         emb = discord.Embed(
-            title="❄ Member Left",
+            title="⚡ Member Left",
             description=f"👋 **{member}** has left **{BRAND_NAME}**.",
             color=THEME_COLOR,
             timestamp=datetime.now(timezone.utc)
@@ -9184,7 +9184,7 @@ async def on_member_update(before, after):
                     await after.add_roles(role, reason="Server boost — VIP")
                 except Exception:
                     pass
-            emb = discord.Embed(title=f"❄ Thank you for boosting! — {BRAND_NAME}", description=f"{after.mention} boosted the server and received 💎 **VIP**!", color=THEME_COLOR, timestamp=datetime.now(timezone.utc))
+            emb = discord.Embed(title=f"⚡ Thank you for boosting! — {BRAND_NAME}", description=f"{after.mention} boosted the server and received 💎 **VIP**!", color=THEME_COLOR, timestamp=datetime.now(timezone.utc))
             emb.set_thumbnail(url=after.display_avatar.url)
             emb.set_footer(text=FOOTER_TEXT)
             ch = bot.get_channel(BOOST_CHANNEL_ID) or await bot.fetch_channel(BOOST_CHANNEL_ID)
@@ -9202,14 +9202,14 @@ async def on_command_error(ctx, error):
 # ==================== COMMANDS ====================
 @bot.command()
 async def ping(ctx):
-    emb = discord.Embed(title=f"❄ Pong — {BRAND_NAME}", description=f"Latency: **`{round(bot.latency*1000)}ms`**", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Pong — {BRAND_NAME}", description=f"Latency: **`{round(bot.latency*1000)}ms`**", color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
 @bot.command()
 async def help(ctx):
     emb = discord.Embed(
-        title=f"❄ {BRAND_NAME} Help",
+        title=f"⚡ {BRAND_NAME} Help",
         description=(
             f"**Prefix:** `{PREFIX}`\n"
             "Higher perm can use lower perm commands.\n\n"
@@ -9248,7 +9248,7 @@ async def antinuke_cmd(ctx, mode: str = None):
         lines = [f"**Enabled:** `{ANTI_NUKE_ENABLED}`", f"**Window:** `{ANTI_NUKE_WINDOW}s`", "", "**Thresholds:**"]
         for k, v in ANTI_NUKE_THRESHOLDS.items():
             lines.append(f"• `{k}` → {v}")
-        emb = discord.Embed(title=f"❄ Anti-Nuke — {BRAND_NAME}", description="\n".join(lines), color=THEME_COLOR)
+        emb = discord.Embed(title=f"⚡ Anti-Nuke — {BRAND_NAME}", description="\n".join(lines), color=THEME_COLOR)
         emb.set_footer(text=FOOTER_TEXT)
         return await ctx.send(embed=emb)
     m = mode.lower()
@@ -9306,7 +9306,7 @@ async def partner_cmd(ctx, action: str = None, *, target: str = None):
                 return await ctx.send(f"{member.mention} already has {role.mention}.")
             await member.add_roles(role, reason=f"Partnership accepted by {ctx.author}")
             emb = discord.Embed(
-                title=f"❄ Partner Accepted — {BRAND_NAME}",
+                title=f"⚡ Partner Accepted — {BRAND_NAME}",
                 description=(
                     f"{member.mention} is now a **Partner**.\n"
                     f"**Role:** {role.mention}\n"
@@ -9321,7 +9321,7 @@ async def partner_cmd(ctx, action: str = None, *, target: str = None):
                 return await ctx.send(f"{member.mention} does not have {role.mention}.")
             await member.remove_roles(role, reason=f"Partnership removed by {ctx.author}")
             emb = discord.Embed(
-                title=f"❄ Partner Removed — {BRAND_NAME}",
+                title=f"⚡ Partner Removed — {BRAND_NAME}",
                 description=f"Removed {role.mention} from {member.mention}.",
                 color=THEME_COLOR,
             )
@@ -9342,7 +9342,7 @@ async def setsammy_cmd(ctx, action: str = None, user_id: str = None):
     if action is None or action.lower() in ("list", "status"):
         ids = SAMMY_USER_IDS or ["*(none set — relay disabled)*"]
         emb = discord.Embed(
-            title=f"❄ Sammy Relay — {BRAND_NAME}",
+            title=f"⚡ Sammy Relay — {BRAND_NAME}",
             description=(
                 f"**Leaks channel:** <#{SAB_LEAKS_CHANNEL_ID}>\n"
                 f"**Ping role:** <@&{SAB_LEAKS_ROLE_ID}>\n"
@@ -9372,7 +9372,7 @@ async def setsammy_cmd(ctx, action: str = None, user_id: str = None):
 @bot.command()
 async def perms(ctx):
     cache = resolve_role_ids(ctx.guild)
-    emb = discord.Embed(title=f"❄ {BRAND_NAME} Permissions", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ {BRAND_NAME} Permissions", color=THEME_COLOR)
     for level in sorted(ROLES.keys()):
         mentions = [ctx.guild.get_role(rid).mention for rid in cache.get(level, []) if ctx.guild.get_role(rid)]
         emb.add_field(name=f"▸ Perm {level}", value="\n".join(mentions) or "*None*", inline=False)
@@ -9384,7 +9384,7 @@ async def snipe(ctx):
     data = snipe_data.get(str(ctx.channel.id))
     if not data:
         return await empty_result(ctx, "Nothing to snipe.")
-    emb = discord.Embed(title=f"❄ Snipe — {BRAND_NAME}", description=censor_blacklisted(data.get("content") or ""), color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Snipe — {BRAND_NAME}", description=censor_blacklisted(data.get("content") or ""), color=THEME_COLOR)
     emb.add_field(name="Author", value=data["author"], inline=True)
     emb.add_field(name="Deleted", value=data.get("time", "?"), inline=True)
     emb.set_footer(text=FOOTER_TEXT)
@@ -9422,7 +9422,7 @@ async def invites_cmd(ctx, *, target: str = None):
             lines.append(f"`{inv.code}` — **{uses}** uses (max {max_uses})")
 
     emb = discord.Embed(
-        title=f"❄ Invites — {BRAND_NAME}",
+        title=f"⚡ Invites — {BRAND_NAME}",
         description=(
             f"**User:** {user.mention} (`{user.id}`)\n"
             f"**Total invites used:** `{total_uses}`\n"
@@ -9477,7 +9477,7 @@ async def invite_leaderboard(ctx):
         lines.append(f"{medal} {u.mention} — **{row['uses']}** invite{'s' if row['uses'] != 1 else ''}")
 
     emb = discord.Embed(
-        title=f"❄ Invite Leaderboard — {BRAND_NAME}",
+        title=f"⚡ Invite Leaderboard — {BRAND_NAME}",
         description="\n".join(lines),
         color=THEME_COLOR,
         timestamp=datetime.now(timezone.utc),
@@ -9505,7 +9505,7 @@ async def sanctions(ctx, *, target: str = None):
         return await ctx.send(embed=emb)
     ordered = _sort_sanctions_newest_first(lst)
     lines = [f"**{i}.** `{s.get('date','?')}`\n↳ {s.get('reason','No reason')}" for i, s in enumerate(ordered, 1)]
-    emb = discord.Embed(title=f"❄ Sanctions — {BRAND_NAME}", description="\n\n".join(lines)[:4000], color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Sanctions — {BRAND_NAME}", description="\n\n".join(lines)[:4000], color=THEME_COLOR)
     emb.set_author(name=str(user), icon_url=user.display_avatar.url)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
@@ -9538,7 +9538,7 @@ async def warn(ctx, *, args=None):
     if target_member and not can_moderate(ctx.author, target_member):
         return await ctx.send("You can't warn someone with equal or higher rank.")
     add_sanction(user.id, reason, ctx.author.id)
-    emb = discord.Embed(title=f"❄ Warn — {BRAND_NAME}", description=f"{user.mention} was warned\n**Reason:** {reason}", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Warn — {BRAND_NAME}", description=f"{user.mention} was warned\n**Reason:** {reason}", color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
@@ -9574,7 +9574,7 @@ async def tempmute(ctx, *, args=None):
     try:
         await member.timeout(datetime.now(timezone.utc) + delta, reason=reason)
         add_sanction(member.id, f"tempmute {duration} - {reason}", ctx.author.id)
-        emb = discord.Embed(title=f"❄ Temp Mute — {BRAND_NAME}", description=f"{member.mention} muted for **{duration}**\n**Reason:** {reason}", color=THEME_COLOR)
+        emb = discord.Embed(title=f"⚡ Temp Mute — {BRAND_NAME}", description=f"{member.mention} muted for **{duration}**\n**Reason:** {reason}", color=THEME_COLOR)
         emb.set_footer(text=FOOTER_TEXT)
         await ctx.send(embed=emb)
     except Exception as e:
@@ -9598,7 +9598,7 @@ async def unmute(ctx, *, target: str = None):
         return await cmd_usage(ctx, "`+unmute <@member>`")
     try:
         await member.timeout(None, reason=f"Unmuted by {ctx.author}")
-        emb = discord.Embed(title=f"❄ Unmute — {BRAND_NAME}", description=f"{member.mention} has been unmuted.", color=THEME_COLOR)
+        emb = discord.Embed(title=f"⚡ Unmute — {BRAND_NAME}", description=f"{member.mention} has been unmuted.", color=THEME_COLOR)
         emb.set_footer(text=FOOTER_TEXT)
         await ctx.send(embed=emb)
     except Exception as e:
@@ -9856,7 +9856,7 @@ async def userinfo(ctx, *, target: str = None):
         user = await get_target(ctx, target)
     user = user or ctx.author
     member = ctx.guild.get_member(user.id)
-    emb = discord.Embed(title=f"❄ User Info — {BRAND_NAME}", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ User Info — {BRAND_NAME}", color=THEME_COLOR)
     emb.set_author(name=str(user), icon_url=user.display_avatar.url)
     emb.set_thumbnail(url=user.display_avatar.url)
     emb.add_field(name="ID", value=f"`{user.id}`", inline=True)
@@ -9869,7 +9869,7 @@ async def userinfo(ctx, *, target: str = None):
 @bot.command()
 async def serverinfo(ctx):
     g = ctx.guild
-    emb = discord.Embed(title=f"❄ {g.name}", description=f"**{BRAND_NAME}**", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ {g.name}", description=f"**{BRAND_NAME}**", color=THEME_COLOR)
     if g.icon:
         emb.set_thumbnail(url=g.icon.url)
     emb.add_field(name="Members", value=f"`{g.member_count}`", inline=True)
@@ -9899,7 +9899,7 @@ async def clearwarns(ctx, *, target: str = None):
     count = len(sanctions_data.get(uid, []))
     sanctions_data[uid] = []
     save_sanctions()
-    emb = discord.Embed(title=f"❄ Clear Warns — {BRAND_NAME}", description=f"Cleared **{count}** sanction(s) from {user.mention}", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Clear Warns — {BRAND_NAME}", description=f"Cleared **{count}** sanction(s) from {user.mention}", color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
@@ -9935,7 +9935,7 @@ async def del_sanction(ctx, action: str = None, *, rest: str = None):
     deleted = ordered[num - 1]
     sanctions_data[uid] = [s for s in lst if s is not deleted]
     save_sanctions()
-    emb = discord.Embed(title=f"❄ Del Sanction — {BRAND_NAME}", description=f"Deleted: **{deleted.get('date','?')}**: {deleted.get('reason','')}", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Del Sanction — {BRAND_NAME}", description=f"Deleted: **{deleted.get('date','?')}**: {deleted.get('reason','')}", color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
@@ -9947,7 +9947,7 @@ async def mutelist(ctx):
     if not muted:
         return await empty_result(ctx, "No one is currently muted.")
     lines = [f"{m.mention} — until {discord.utils.format_dt(m.timed_out_until, 'R')}" for m in muted[:25]]
-    emb = discord.Embed(title=f"❄ Mute List — {BRAND_NAME}", description="\n".join(lines), color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Mute List — {BRAND_NAME}", description="\n".join(lines), color=THEME_COLOR)
     emb.set_footer(text=f"{FOOTER_TEXT}  •  {len(muted)} muted")
     await ctx.send(embed=emb)
 
@@ -9967,7 +9967,7 @@ async def banlist(ctx):
         if len(reason) > 60:
             reason = reason[:57] + "..."
         lines.append(f"**{entry.user}** (`{entry.user.id}`)\n↳ {reason}")
-    emb = discord.Embed(title=f"❄ Ban List — {BRAND_NAME}", description="\n\n".join(lines), color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Ban List — {BRAND_NAME}", description="\n\n".join(lines), color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
@@ -9988,7 +9988,7 @@ async def baninfo(ctx, *, target: str = None):
         return await ctx.send(f"**{user}** is not banned.")
     except Exception as e:
         return await ctx.send(f"Failed: {e}")
-    emb = discord.Embed(title=f"❄ Ban Info — {BRAND_NAME}", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Ban Info — {BRAND_NAME}", color=THEME_COLOR)
     emb.set_author(name=str(user), icon_url=user.display_avatar.url)
     emb.add_field(name="User", value=f"{user} (`{user.id}`)", inline=False)
     emb.add_field(name="Reason", value=ban_entry.reason or "No reason", inline=False)
@@ -10009,7 +10009,7 @@ async def modstats(ctx):
         return await ctx.send("No moderation actions recorded yet.")
     sorted_mods = sorted(counts.items(), key=lambda x: x[1], reverse=True)[:25]
     lines = [f"**{i}.** <@{mid}> — `{cnt}` actions" for i, (mid, cnt) in enumerate(sorted_mods, 1)]
-    emb = discord.Embed(title=f"❄ Moderator Statistics — {BRAND_NAME}", description="\n".join(lines), color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Moderator Statistics — {BRAND_NAME}", description="\n".join(lines), color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
@@ -10022,7 +10022,7 @@ async def syncroles(ctx):
     for level in sorted(cache.keys()):
         roles = [ctx.guild.get_role(rid).mention for rid in cache[level] if ctx.guild.get_role(rid)]
         lines.append(f"**▸ Perm {level}:** {' '.join(roles) if roles else '*none*'}")
-    emb = discord.Embed(title=f"❄ Roles Synced — {BRAND_NAME}", description="\n".join(lines) or "No roles matched.", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Roles Synced — {BRAND_NAME}", description="\n".join(lines) or "No roles matched.", color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
@@ -10066,7 +10066,7 @@ async def temprole(ctx, *, args: str = None):
             await member.add_roles(role, reason=f"Temp role {duration} by {ctx.author}")
         ends_at = datetime.now(timezone.utc) + delta
         schedule_temprole(ctx.guild.id, member.id, role.id, ends_at)
-        emb = discord.Embed(title=f"❄ Temp Role — {BRAND_NAME}", description=f"Gave **{role.name}** to {member.mention} for **{duration}**\nRemoves {discord.utils.format_dt(ends_at, 'R')}", color=THEME_COLOR)
+        emb = discord.Embed(title=f"⚡ Temp Role — {BRAND_NAME}", description=f"Gave **{role.name}** to {member.mention} for **{duration}**\nRemoves {discord.utils.format_dt(ends_at, 'R')}", color=THEME_COLOR)
         emb.set_footer(text=FOOTER_TEXT)
         await ctx.send(embed=emb)
     except Exception as e:
@@ -10124,7 +10124,7 @@ async def linkalt(ctx, *, args: str = None):
     if main_id not in blacklist:
         blacklist.append(main_id)
         save_blacklist()
-    emb = discord.Embed(title=f"❄ Link Alt — {BRAND_NAME}", description=f"Linked **{alt_user}** as alt of **{main_user}** and blacklisted.", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Link Alt — {BRAND_NAME}", description=f"Linked **{alt_user}** as alt of **{main_user}** and blacklisted.", color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
@@ -10153,7 +10153,7 @@ async def changeperm(ctx, command: str = None, level: str = None):
 async def commands_command(ctx):
     if not has_staff_permission(ctx.author):
         return await cmd_fail(ctx)
-    emb = discord.Embed(title=f"❄ Ticket Commands — {BRAND_NAME}", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Ticket Commands — {BRAND_NAME}", color=THEME_COLOR)
     emb.add_field(name="Ticket tools", value="`+claim` `+close` `+rename <name>` `+add <user>` `+remove <user>`", inline=False)
     emb.add_field(name="Note", value="Panels auto-post on bot startup.", inline=False)
     emb.set_footer(text=FOOTER_TEXT)
@@ -10187,7 +10187,7 @@ async def ban(ctx, *, args=None):
         await ctx.guild.ban(user, reason=reason)
     except Exception:
         pass
-    emb = discord.Embed(title=f"❄ Ban — {BRAND_NAME}", description=f"{user.mention} banned.\n**Reason:** {reason}", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Ban — {BRAND_NAME}", description=f"{user.mention} banned.\n**Reason:** {reason}", color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
@@ -10203,7 +10203,7 @@ async def unban(ctx, user_id=None):
     try:
         user = await bot.fetch_user(int(uid))
         await ctx.guild.unban(user)
-        emb = discord.Embed(title=f"❄ Unban — {BRAND_NAME}", description=f"{user} unbanned.", color=THEME_COLOR)
+        emb = discord.Embed(title=f"⚡ Unban — {BRAND_NAME}", description=f"{user} unbanned.", color=THEME_COLOR)
         emb.set_footer(text=FOOTER_TEXT)
         await ctx.send(embed=emb)
     except Exception as e:
@@ -10238,7 +10238,7 @@ async def kick(ctx, *, args=None):
         return await cmd_fail(ctx)
     try:
         await member.kick(reason=reason)
-        emb = discord.Embed(title=f"❄ Kick — {BRAND_NAME}", description=f"{user.mention} kicked.\n**Reason:** {reason}", color=THEME_COLOR)
+        emb = discord.Embed(title=f"⚡ Kick — {BRAND_NAME}", description=f"{user.mention} kicked.\n**Reason:** {reason}", color=THEME_COLOR)
         emb.set_footer(text=FOOTER_TEXT)
         await ctx.send(embed=emb)
     except Exception as e:
@@ -10276,7 +10276,7 @@ async def bl(ctx, *, args=None):
         await ctx.guild.ban(user, reason=f"Blacklisted: {reason}")
     except Exception:
         pass
-    emb = discord.Embed(title=f"❄ Blacklist — {BRAND_NAME}", description=f"{user.mention} banned and blacklisted.\nreason: {reason}", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Blacklist — {BRAND_NAME}", description=f"{user.mention} banned and blacklisted.\nreason: {reason}", color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
@@ -10297,7 +10297,7 @@ async def unbl(ctx, user_id=None):
         await ctx.guild.unban(user)
     except Exception:
         pass
-    emb = discord.Embed(title=f"❄ Unblacklist — {BRAND_NAME}", description=f"`{uid}` removed from blacklist and unbanned.", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Unblacklist — {BRAND_NAME}", description=f"`{uid}` removed from blacklist and unbanned.", color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
@@ -10314,7 +10314,7 @@ async def blist(ctx):
             lines.append(f"**{user}** (`{uid}`)")
         except Exception:
             lines.append(f"Unknown (`{uid}`)")
-    emb = discord.Embed(title=f"❄ Blacklist — {BRAND_NAME}", description="\n".join(lines), color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Blacklist — {BRAND_NAME}", description="\n".join(lines), color=THEME_COLOR)
     emb.set_footer(text=FOOTER_TEXT)
     await ctx.send(embed=emb)
 
@@ -10333,7 +10333,7 @@ async def avatar(ctx, *, target: str = None):
     elif target:
         user = await get_target(ctx, target)
     user = user or ctx.author
-    emb = discord.Embed(title=f"❄ Avatar — {user}", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Avatar — {user}", color=THEME_COLOR)
     emb.set_image(url=user.display_avatar.url)
     emb.add_field(name="Link", value=f"[Open]({user.display_avatar.url})", inline=False)
     emb.set_footer(text=FOOTER_TEXT)
@@ -10351,7 +10351,7 @@ async def role_info(ctx, *, role_input: str = None):
     if not role:
         return await cmd_usage(ctx, "`+roleinfo <@role|name|id>`")
     members = len(role.members)
-    emb = discord.Embed(title=f"❄ Role Info — {role.name}", color=role.color.value or THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Role Info — {role.name}", color=role.color.value or THEME_COLOR)
     emb.add_field(name="ID", value=f"`{role.id}`", inline=True)
     emb.add_field(name="Members", value=f"`{members}`", inline=True)
     emb.add_field(name="Mentionable", value="Yes" if role.mentionable else "No", inline=True)
@@ -10370,7 +10370,7 @@ async def membercount(ctx):
     bots = sum(1 for m in g.members if m.bot)
     humans = g.member_count - bots if g.member_count else len([m for m in g.members if not m.bot])
     online = sum(1 for m in g.members if m.status != discord.Status.offline and not m.bot)
-    emb = discord.Embed(title=f"❄ Member Count — {g.name}", color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Member Count — {g.name}", color=THEME_COLOR)
     emb.add_field(name="Total", value=f"`{g.member_count}`", inline=True)
     emb.add_field(name="Humans", value=f"`{humans}`", inline=True)
     emb.add_field(name="Bots", value=f"`{bots}`", inline=True)
@@ -10394,7 +10394,7 @@ async def poll(ctx, *, args: str = None):
     lines = [f"**{question}**", ""]
     for i, opt in enumerate(options):
         lines.append(f"{emojis[i]} {opt}")
-    emb = discord.Embed(title=f"❄ Poll — {BRAND_NAME}", description="\n".join(lines), color=THEME_COLOR)
+    emb = discord.Embed(title=f"⚡ Poll — {BRAND_NAME}", description="\n".join(lines), color=THEME_COLOR)
     emb.set_footer(text=f"{FOOTER_TEXT} • by {ctx.author}")
     msg = await ctx.send(embed=emb)
     for i in range(len(options)):
@@ -10422,9 +10422,9 @@ async def slowmode(ctx, seconds: str = None):
     try:
         await ctx.channel.edit(slowmode_delay=delay)
         if delay == 0:
-            await ctx.send(embed=discord.Embed(description=f"❄ Slowmode **disabled** in {ctx.channel.mention}.", color=THEME_COLOR))
+            await ctx.send(embed=discord.Embed(description=f"⚡ Slowmode **disabled** in {ctx.channel.mention}.", color=THEME_COLOR))
         else:
-            await ctx.send(embed=discord.Embed(description=f"❄ Slowmode set to **{delay}s** in {ctx.channel.mention}.", color=THEME_COLOR))
+            await ctx.send(embed=discord.Embed(description=f"⚡ Slowmode set to **{delay}s** in {ctx.channel.mention}.", color=THEME_COLOR))
     except Exception as e:
         await ctx.send(f"Failed: {e}")
 
@@ -10456,7 +10456,7 @@ async def nick(ctx, *, args: str = None):
     try:
         await member.edit(nick=new_nick, reason=f"nick by {ctx.author}")
         shown = new_nick or member.name
-        await ctx.send(embed=discord.Embed(description=f"❄ Nickname for {member.mention} set to **{shown}**.", color=THEME_COLOR))
+        await ctx.send(embed=discord.Embed(description=f"⚡ Nickname for {member.mention} set to **{shown}**.", color=THEME_COLOR))
     except Exception as e:
         await ctx.send(f"Failed: {e}")
 
@@ -10494,7 +10494,7 @@ async def softban(ctx, *, args: str = None):
         await ctx.guild.unban(user, reason=f"Softban unban: {reason}")
         add_sanction(user.id, f"softban - {reason}", ctx.author.id)
         emb = discord.Embed(
-            title=f"❄ Softban — {BRAND_NAME}",
+            title=f"⚡ Softban — {BRAND_NAME}",
             description=f"{user.mention} softbanned (messages purged).\n**Reason:** {reason}",
             color=THEME_COLOR,
         )
@@ -10530,7 +10530,7 @@ async def lockdown(ctx):
         return await cmd_fail(ctx)
     locked = 0
     failed = 0
-    status = await ctx.send(embed=discord.Embed(description="❄ Locking channels…", color=THEME_COLOR))
+    status = await ctx.send(embed=discord.Embed(description="⚡ Locking channels…", color=THEME_COLOR))
     for channel in ctx.guild.text_channels:
         try:
             overwrite = channel.overwrites_for(ctx.guild.default_role)
@@ -10542,7 +10542,7 @@ async def lockdown(ctx):
         except Exception:
             failed += 1
     emb = discord.Embed(
-        title=f"❄ Lockdown — {BRAND_NAME}",
+        title=f"⚡ Lockdown — {BRAND_NAME}",
         description=f"Locked **{locked}** channels.\nFailed: `{failed}`",
         color=THEME_COLOR,
     )
@@ -10560,7 +10560,7 @@ async def unlockdown(ctx):
         return await cmd_fail(ctx)
     unlocked = 0
     failed = 0
-    status = await ctx.send(embed=discord.Embed(description="❄ Unlocking channels…", color=THEME_COLOR))
+    status = await ctx.send(embed=discord.Embed(description="⚡ Unlocking channels…", color=THEME_COLOR))
     for channel in ctx.guild.text_channels:
         try:
             overwrite = channel.overwrites_for(ctx.guild.default_role)
@@ -10572,7 +10572,7 @@ async def unlockdown(ctx):
         except Exception:
             failed += 1
     emb = discord.Embed(
-        title=f"❄ Unlockdown — {BRAND_NAME}",
+        title=f"⚡ Unlockdown — {BRAND_NAME}",
         description=f"Unlocked **{unlocked}** channels.\nFailed: `{failed}`",
         color=THEME_COLOR,
     )
@@ -10620,7 +10620,7 @@ async def role_all(ctx, *, role_input: str = None):
     total = len(members)
     if total == 0:
         emb = discord.Embed(
-            title=f"❄ Role All — {BRAND_NAME}",
+            title=f"⚡ Role All — {BRAND_NAME}",
             description=f"Everyone who can receive {role.mention} already has it.",
             color=THEME_COLOR,
         )
@@ -10646,7 +10646,7 @@ async def role_all(ctx, *, role_input: str = None):
             await asyncio.sleep(1.0)
 
     emb = discord.Embed(
-        title=f"❄ Role All — {BRAND_NAME}",
+        title=f"⚡ Role All — {BRAND_NAME}",
         description=(
             f"**Role:** {role.mention}\n"
             f"**Given to:** `{success}` members\n"
@@ -10752,7 +10752,7 @@ class _HealthHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.end_headers()
-        self.wfile.write(b"STEAL A BRAINROT Bot is online")
+        self.wfile.write(b"Malikhias MM Bot is online")
     def log_message(self, format, *args):
         return
 
